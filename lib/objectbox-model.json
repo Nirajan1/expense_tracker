@@ -1,0 +1,133 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:4324871529000987744",
+      "lastPropertyId": "6:5019323555561638200",
+      "name": "TransactionModel",
+      "properties": [
+        {
+          "id": "1:8152111216725888197",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:8484837863198934642",
+          "name": "amount",
+          "type": 9
+        },
+        {
+          "id": "3:948439506825432572",
+          "name": "date",
+          "type": 9
+        },
+        {
+          "id": "4:8198935935424583420",
+          "name": "categoryFrom",
+          "type": 9
+        },
+        {
+          "id": "5:2583205664040630386",
+          "name": "categoryTo",
+          "type": 9
+        },
+        {
+          "id": "6:5019323555561638200",
+          "name": "type",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:2569232988467431518",
+      "lastPropertyId": "4:8923997284882049744",
+      "name": "CategoryModel",
+      "properties": [
+        {
+          "id": "1:2105827177741568055",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3697390202441574555",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:6603503807476978370",
+          "name": "slug",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "3:4714854442517657664"
+        },
+        {
+          "id": "4:8923997284882049744",
+          "name": "isDefault",
+          "type": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:6798321023293377370",
+      "lastPropertyId": "5:8556637126393128510",
+      "name": "LedgerModel",
+      "properties": [
+        {
+          "id": "1:2581745766984483622",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:9059871112021056845",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:5016222731181500917",
+          "name": "categoryType",
+          "type": 9
+        },
+        {
+          "id": "4:1463524144725750414",
+          "name": "openingBalance",
+          "type": 6
+        },
+        {
+          "id": "5:8556637126393128510",
+          "name": "openingBalanceType",
+          "type": 9
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "5:6798321023293377370",
+  "lastIndexId": "3:4714854442517657664",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [
+    6114446958660389306,
+    4236097693042086683
+  ],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    3375736797520531700,
+    2965707209796176605,
+    2190376645185791078,
+    8672615465892326974,
+    3915780905291677177,
+    3774170466218628783,
+    6640190761632438989
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}
