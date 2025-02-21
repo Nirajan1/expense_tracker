@@ -14,13 +14,13 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   TransactionLocalDataSourceImpl(this.store) {
     transactionBox = store.box<TransactionModel>();
   }
-  
+
   @override
   Future<void> addTransaction(TransactionModel transactionModel) async {
     // transactionBox.put(transactionModel);
-    int assignedId = transactionBox.put(transactionModel);
+    transactionBox.put(transactionModel);
     // print('Transaction added with ID: $assignedId'); // Debugging print
-    transactionModel.id = assignedId; // Ensure the ID is saved
+    // Ensure the ID is saved
   }
 
   @override
@@ -69,6 +69,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
 
   @override
   Future<void> updateTransaction({required TransactionModel transactionModel}) async {
+    print(transactionModel.id);
     transactionBox.put(transactionModel);
     print("Transaction with ID: ${transactionModel.id} updated.");
   }

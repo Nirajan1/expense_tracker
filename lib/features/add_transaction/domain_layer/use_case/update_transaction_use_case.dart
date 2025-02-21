@@ -5,6 +5,7 @@ class UpdateTransactionUseCase {
   final TransactionRepositories transactionRepositories;
   UpdateTransactionUseCase({required this.transactionRepositories});
   Future<void> updateTransaction({required TransactionEntity transactionEntity}) async {
+    print('user case ${transactionEntity.id}');
     return await transactionRepositories.updateTransaction(transactionEntity: transactionEntity);
   }
 }

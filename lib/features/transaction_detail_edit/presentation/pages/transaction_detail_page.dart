@@ -45,8 +45,8 @@ class TransactionDetailPageView extends StatelessWidget {
             ),
             _buildInputField(context, 'Transaction Type', transactionEntity.type.toUpperCase()),
             _buildInputField(context, 'Transaction Date', transactionEntity.date),
-            _buildCategory(context, ' From', transactionEntity.categoryFrom),
-            _buildCategory(context, ' To', transactionEntity.categoryTo),
+            _buildCategory(context, ' From', transactionEntity.ledgerFrom),
+            _buildCategory(context, ' To', transactionEntity.ledgerTo),
             _buildInputField(context, 'Amount', transactionEntity.amount)
           ],
         ),

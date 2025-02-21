@@ -3,29 +3,30 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class TransactionModel {
-  @Id(assignable: true)
-  int id;
-  String amount;
-  String date;
-  String categoryFrom;
-  String categoryTo;
-  String type;
+  @Id()
+  int id = 0;
+  final String amount;
+  final String date;
+  final String ledgerFrom;
+  final String ledgerTo;
+  final String type;
 
   TransactionModel({
     this.id = 0,
     required this.amount,
     required this.date,
-    required this.categoryFrom,
-    required this.categoryTo,
+    required this.ledgerFrom,
+    required this.ledgerTo,
     required this.type,
   });
 
   factory TransactionModel.fromEntity(TransactionEntity entity) {
     return TransactionModel(
+      id: entity.id!.toInt(),
       amount: entity.amount,
       date: entity.date,
-      categoryFrom: entity.categoryFrom,
-      categoryTo: entity.categoryTo,
+      ledgerFrom: entity.ledgerFrom,
+      ledgerTo: entity.ledgerTo,
       type: entity.type,
     );
   }
@@ -35,8 +36,8 @@ class TransactionModel {
       id: id,
       amount: amount,
       date: date,
-      categoryFrom: categoryFrom,
-      categoryTo: categoryTo,
+      ledgerFrom: ledgerFrom,
+      ledgerTo: ledgerTo,
       type: type,
     );
   }
@@ -46,8 +47,8 @@ class TransactionModel {
       'id': id,
       'amount': amount,
       'date': date,
-      'categoryFrom': categoryFrom,
-      'categoryTo': categoryTo,
+      'ledgerFrom': ledgerFrom,
+      'ledgerTo': ledgerTo,
       'type': type,
     };
   }

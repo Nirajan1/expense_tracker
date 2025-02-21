@@ -20,8 +20,8 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final GlobalKey<FormState> editKey = GlobalKey<FormState>();
-  String? categoryFrom = '';
-  String? categoryTo = '';
+  String? ledgerFrom = '';
+  String? ledgerTo = '';
   String? transactionType = '';
   @override
   void dispose() {
@@ -39,9 +39,9 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
       _dateController.text = widget.transactionEntity.date;
     }
 
-    if (categoryFrom!.isEmpty || categoryTo!.isEmpty || transactionType!.isEmpty) {
-      categoryFrom = widget.transactionEntity.categoryFrom;
-      categoryTo = widget.transactionEntity.categoryTo;
+    if (ledgerFrom!.isEmpty || ledgerTo!.isEmpty || transactionType!.isEmpty) {
+      ledgerFrom = widget.transactionEntity.ledgerFrom;
+      ledgerTo = widget.transactionEntity.ledgerTo;
       transactionType = widget.transactionEntity.type;
     }
     return Scaffold(
@@ -56,9 +56,9 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
               const SizedBox(height: 18),
               _buildDateField(context),
               const SizedBox(height: 18),
-              _buildCategory(context, transactionType == "Expense" ? 'To' : 'From', transactionType == "Expense" ? categoryTo.toString() : categoryFrom.toString()),
+              _buildCategory(context, transactionType == "Expense" ? 'To' : 'From', transactionType == "Expense" ? ledgerTo.toString() : ledgerFrom.toString()),
               const SizedBox(height: 18),
-              _buildCategory(context, transactionType == "Expense" ? 'From' : 'To', transactionType == "Expense" ? categoryFrom.toString() : categoryTo.toString()),
+              _buildCategory(context, transactionType == "Expense" ? 'From' : 'To', transactionType == "Expense" ? ledgerFrom.toString() : ledgerTo.toString()),
               const SizedBox(height: 18),
               _buildInputField(context, 'Transaction Amount', _amountController),
               const SizedBox(height: 18),
@@ -101,8 +101,8 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
                         // Map data = {
                         //   'amount': _amountController.text,
                         //   'date': _dateController.text,
-                        //   'categoryFrom': categoryFrom.toString(),
-                        //   'categoryTo': categoryTo.toString(),
+                        //   'ledgerFrom': ledgerFrom.toString(),
+                        //   'ledgerTo': ledgerTo.toString(),
                         //   'type': _typeController.text,
                         // };
                         // print(widget.transactionEntity.id);
@@ -113,8 +113,8 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
                                     id: widget.transactionEntity.id,
                                     amount: _amountController.text.replaceAll('Rs', ''),
                                     date: _dateController.text,
-                                    categoryFrom: categoryFrom.toString(),
-                                    categoryTo: categoryTo.toString(),
+                                    ledgerFrom: ledgerFrom.toString(),
+                                    ledgerTo: ledgerTo.toString(),
                                     type: transactionType.toString(),
                                   ),
                                 ),
@@ -220,6 +220,7 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
   }
 
   Widget _buildCategory(BuildContext context, String title, String selectedValue) {
+    // final String name = title == 'expense' ? "To" : 'From';
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
       child: Column(
@@ -262,10 +263,21 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
                           dropdownColor: AppColors.whiteColor,
                           hint: Text('Select a category'),
                           items: state.ledgerList
+                              .where(
+                                (element) => (transactionType == 'income' && title == 'From')
+                                    ? element.categoryType != 'OpeningBalance' && element.categoryType != 'Cash' && element.categoryType != 'Expense'
+                                    : (transactionType == 'income' && title == 'To')
+                                        ? element.categoryType != 'OpeningBalance' && element.categoryType != 'Person' && element.categoryType != 'Expense' && element.categoryType != 'Income'
+                                        : (transactionType == 'expense' && title == 'To')
+                                            ? element.categoryType != 'OpeningBalance' && element.categoryType != 'Cash' && element.categoryType != 'Income'
+                                            : (transactionType == 'expense' && title == 'From')
+                                                ? element.categoryType != 'OpeningBalance' && element.categoryType != 'Person' && element.categoryType != 'Expense' && element.categoryType != 'Income'
+                                                : element.categoryType != 'Cash',
+                              )
                               .map(
                                 (e) => DropdownMenuItem(
                                   value: e.name,
-                                  child: Text(e.name),
+                                  child: Text('${e.name} ${e.categoryType}'),
                                 ),
                               )
                               .toList(), //  [
@@ -278,9 +290,9 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
                           //       ],
                           onChanged: (value) {
                             if (title == "From") {
-                              categoryFrom = value;
+                              ledgerFrom = value;
                             } else if (title == "To") {
-                              categoryTo = value;
+                              ledgerTo = value;
                             }
                           },
                         ),

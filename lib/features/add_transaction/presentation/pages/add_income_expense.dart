@@ -18,8 +18,8 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
   final TextEditingController _transactionAmountController = TextEditingController();
   final TextEditingController _transactionDateController = TextEditingController();
   final GlobalKey<FormState> key = GlobalKey<FormState>();
-  String? categoryFrom = '';
-  String? categoryTo = '';
+  String? ledgerFrom = '';
+  String? ledgerTo = '';
   @override
   void dispose() {
     _transactionAmountController.dispose();
@@ -42,9 +42,9 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
               const SizedBox(height: 18),
               _buildDateField(context),
               const SizedBox(height: 18),
-              _buildCategory(context, widget.title == "Expense" ? "To" : 'From', widget.title == "Expense" ? categoryTo.toString() : categoryFrom.toString()),
+              _buildCategory(context, widget.title == "Expense" ? "To" : 'From', widget.title == "Expense" ? ledgerTo.toString() : ledgerFrom.toString()),
               const SizedBox(height: 18),
-              _buildCategory(context, widget.title == "Expense" ? "From" : 'To', widget.title == "Expense" ? categoryFrom.toString() : categoryTo.toString()),
+              _buildCategory(context, widget.title == "Expense" ? "From" : 'To', widget.title == "Expense" ? ledgerFrom.toString() : ledgerTo.toString()),
             ],
           ),
         ),
@@ -79,8 +79,8 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
                         Map data = {
                           'amount': _transactionAmountController.text,
                           'date': _transactionDateController.text,
-                          'categoryFrom': categoryFrom.toString(),
-                          'categoryTo': categoryTo.toString(),
+                          'ledgerFrom': ledgerFrom.toString(),
+                          'ledgerTo': ledgerTo.toString(),
                           'type': widget.title.toLowerCase(),
                         };
                         print(data);
@@ -91,8 +91,8 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
                                     id: null,
                                     amount: _transactionAmountController.text,
                                     date: _transactionDateController.text,
-                                    categoryFrom: categoryFrom.toString(),
-                                    categoryTo: categoryTo.toString(),
+                                    ledgerFrom: ledgerFrom.toString(),
+                                    ledgerTo: ledgerTo.toString(),
                                     type: widget.title.toLowerCase(),
                                   ),
                                 ),
@@ -257,7 +257,7 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Transaction Ledger $name',
+            'Ledger $name',
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 14),
@@ -307,9 +307,9 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
                     onChanged: (value) {
                       if (state.ledgerList.isNotEmpty) {
                         if (name == "From") {
-                          categoryFrom = value.toString();
+                          ledgerFrom = value.toString();
                         } else {
-                          categoryTo = value.toString();
+                          ledgerTo = value.toString();
                         }
                       }
                     },

@@ -4,6 +4,7 @@ import 'package:expense_tracker/core/app_top_container.dart';
 import 'package:expense_tracker/features/ledger/domain_layer/entity/ledger_entity.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/pages/add_ledger_page.dart';
+import 'package:expense_tracker/features/ledger/presentation_layer/pages/ledger_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,11 +14,11 @@ class LedgerPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            AppTopContainer(title: 'Ledger List'),
-            BlocBuilder<LedgerBloc, LedgerState>(
+      body: Column(
+        children: [
+          AppTopContainer(title: 'Ledger List'),
+          SingleChildScrollView(
+            child: BlocBuilder<LedgerBloc, LedgerState>(
               builder: (context, state) {
                 if (state is LedgerLoadingState) {
                   return Center(child: CircularProgressIndicator());
@@ -50,8 +51,8 @@ class LedgerPageView extends StatelessWidget {
                 }
               },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -71,36 +72,49 @@ class LedgerPageView extends StatelessWidget {
 Widget _buildCard(BuildContext context, LedgerEntity ledgerEntity) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 18.0),
-    child: AppCardLayoutView(
-      child: ListTile(
-        title: Text(ledgerEntity.name),
-        subtitle: Row(
-          spacing: 4,
-          children: [
-            Text(ledgerEntity.openingBalanceType.toString()),
-            Text(ledgerEntity.openingBalance.toString()),
-            SizedBox(width: 8),
-            Text(
-              ledgerEntity.categoryType.toString(),
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold),
+    child: InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LedgerDetailPageView(
+              name: ledgerEntity.name,
+              ledgerCategory: ledgerEntity.categoryType,
             ),
-          ],
-        ),
-        trailing: BlocBuilder<LedgerBloc, LedgerState>(
-          builder: (context, state) {
-            if (state is LedgerLoadedSuccessState) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted successfully')));
-            }
-            return InkWell(
-              onTap: () {
-                context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
-              },
-              child: Icon(
-                Icons.delete_outline,
-                color: Colors.redAccent,
+          ),
+        );
+      },
+      child: AppCardLayoutView(
+        child: ListTile(
+          title: Text(ledgerEntity.name),
+          subtitle: Row(
+            spacing: 4,
+            children: [
+              Text(ledgerEntity.openingBalanceType.toString()),
+              Text(ledgerEntity.openingBalance.toString()),
+              SizedBox(width: 8),
+              Text(
+                ledgerEntity.categoryType.toString(),
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold),
               ),
-            );
-          },
+            ],
+          ),
+          trailing: BlocBuilder<LedgerBloc, LedgerState>(
+            builder: (context, state) {
+              if (state is LedgerLoadedSuccessState) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted successfully')));
+              }
+              return InkWell(
+                onTap: () {
+                  context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
+                },
+                child: Icon(
+                  Icons.delete_outline,
+                  color: Colors.redAccent,
+                ),
+              );
+            },
+          ),
         ),
       ),
     ),

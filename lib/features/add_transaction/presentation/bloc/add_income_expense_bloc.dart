@@ -57,6 +57,7 @@ class AddIncomeExpenseBloc extends Bloc<AddIncomeExpenseEvent, AddIncomeExpenseS
   }
 
   FutureOr<void> updateIncomeExpenseClickEvent(UpdateIncomeExpenseClickEvent event, Emitter<AddIncomeExpenseState> emit) async {
+    print('in bloc ${event.transactionEntity.id}');
     await updateTransactionUseCase.updateTransaction(transactionEntity: event.transactionEntity);
     emit(TransactionSuccessState());
     add(IncomeExpenseLoadEvent());

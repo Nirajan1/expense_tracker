@@ -12,8 +12,8 @@ class TransactionRepositoryImpl implements TransactionRepositories {
     final transactionModel = TransactionModel(
       amount: transactionEntity.amount,
       date: transactionEntity.date,
-      categoryFrom: transactionEntity.categoryFrom,
-      categoryTo: transactionEntity.categoryTo,
+      ledgerFrom: transactionEntity.ledgerFrom,
+      ledgerTo: transactionEntity.ledgerTo,
       type: transactionEntity.type,
     );
     return await transactionLocalDataSource.addTransaction(transactionModel);
@@ -35,14 +35,7 @@ class TransactionRepositoryImpl implements TransactionRepositories {
   @override
   Future<void> updateTransaction({required TransactionEntity transactionEntity}) async {
     final transactionModel = TransactionModel.fromEntity(transactionEntity);
-    //  TransactionModel(
-    //   id: transactionEntity.id!.toInt(),
-    //   amount: transactionEntity.amount,
-    //   date: transactionEntity.date,
-    //   categoryFrom: transactionEntity.categoryFrom,
-    //   categoryTo: transactionEntity.categoryTo,
-    //   type: transactionEntity.type,
-    // );
+    print('data_layer repository impl :${transactionModel.id}');
     return await transactionLocalDataSource.updateTransaction(transactionModel: transactionModel);
   }
 }
