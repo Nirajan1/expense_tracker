@@ -1,6 +1,7 @@
 import 'package:expense_tracker/core/app_colors.dart';
 import 'package:expense_tracker/features/add_transaction/domain_layer/entity/transaction_entity.dart';
 import 'package:expense_tracker/features/add_transaction/presentation/bloc/add_income_expense_bloc.dart';
+import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -41,9 +42,9 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
               const SizedBox(height: 18),
               _buildDateField(context),
               const SizedBox(height: 18),
-              _buildCategory(context, 'From', categoryFrom.toString()),
+              _buildCategory(context, widget.title == "Expense" ? "To" : 'From', widget.title == "Expense" ? categoryTo.toString() : categoryFrom.toString()),
               const SizedBox(height: 18),
-              _buildCategory(context, 'To', categoryTo.toString()),
+              _buildCategory(context, widget.title == "Expense" ? "From" : 'To', widget.title == "Expense" ? categoryFrom.toString() : categoryTo.toString()),
             ],
           ),
         ),
@@ -75,14 +76,14 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
                 onPressed: state is TransactionLoadingState
                     ? null
                     : () {
-                        // Map data = {
-                        //   'amount': _transactionAmountController.text,
-                        //   'date': _transactionDateController.text,
-                        //   'categoryFrom': categoryFrom.toString(),
-                        //   'categoryTo': categoryTo.toString(),
-                        //   'type': widget.title.toLowerCase(),
-                        // };
-                        // print(data);
+                        Map data = {
+                          'amount': _transactionAmountController.text,
+                          'date': _transactionDateController.text,
+                          'categoryFrom': categoryFrom.toString(),
+                          'categoryTo': categoryTo.toString(),
+                          'type': widget.title.toLowerCase(),
+                        };
+                        print(data);
                         if (key.currentState!.validate()) {
                           context.read<AddIncomeExpenseBloc>().add(
                                 AddIncomeExpenseClickEvent(
@@ -164,14 +165,14 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
     );
   }
 
-  Widget _buildInputField(BuildContext context, String title) {
+  Widget _buildInputField(BuildContext context, String name) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            name,
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 14),
@@ -182,7 +183,7 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
               hintText: 'Enter a transaction amount',
               hintStyle: Theme.of(context).textTheme.bodyMedium,
             ),
-            validator: (value) => value == null || value.isEmpty ? '$title is required' : null,
+            validator: (value) => value == null || value.isEmpty ? '$name is required' : null,
           ),
         ],
       ),
@@ -190,6 +191,7 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
   }
 
   Widget _buildDateField(BuildContext context) {
+    _transactionDateController.text = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
       child: Column(
@@ -248,39 +250,75 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
     );
   }
 
-  Widget _buildCategory(BuildContext context, String title, String selectedValue) {
+  Widget _buildCategory(BuildContext context, String name, String selectedValue) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Transaction Category $title',
+            'Transaction Ledger $name',
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 14),
-          ButtonTheme(
-            alignedDropdown: true,
-            child: DropdownButtonFormField(
-              style: Theme.of(context).textTheme.labelLarge,
-              dropdownColor: AppColors.whiteColor,
-              hint: Text('Select a category'),
-              validator: (value) => value == null || value.isEmpty ? 'category is required' : null,
-              items: [
-                DropdownMenuItem(value: 'Person', child: Text('Person')),
-                DropdownMenuItem(value: 'Cash', child: Text('Cash')),
-                DropdownMenuItem(value: widget.title == "Income" ? 'Income' : 'Expense' 'Income', child: Text(widget.title == "Income" ? 'Income' : 'Expense')),
-                DropdownMenuItem(value: 'Bank', child: Text('Bank')),
-                DropdownMenuItem(value: 'Opening Balance', child: Text('Opening Balance')),
-              ],
-              onChanged: (value) {
-                if (title == "From") {
-                  categoryFrom = value;
-                } else {
-                  categoryTo = value;
-                }
-              },
-            ),
+          BlocBuilder<LedgerBloc, LedgerState>(
+            builder: (context, state) {
+              if (state is LedgerLoadingState) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is LedgerLoadedState) {
+                return ButtonTheme(
+                  alignedDropdown: true,
+                  child: DropdownButtonFormField(
+                    style: Theme.of(context).textTheme.labelLarge,
+                    dropdownColor: AppColors.whiteColor,
+                    hint: Text('Select a category'),
+                    validator: (value) => value == null ? 'Ledger is required' : null,
+                    items: state.ledgerList.isNotEmpty
+                        ? state.ledgerList
+                            .where(
+                            (element) => (widget.title == 'Income' && name == 'From')
+                                ? element.categoryType != 'OpeningBalance' && element.categoryType != 'Cash' && element.categoryType != 'Expense'
+                                : (widget.title == 'Income' && name == 'To')
+                                    ? element.categoryType != 'OpeningBalance' && element.categoryType != 'Person' && element.categoryType != 'Expense' && element.categoryType != 'Income'
+                                    : (widget.title == 'Expense' && name == 'To')
+                                        ? element.categoryType != 'OpeningBalance' && element.categoryType != 'Cash' && element.categoryType != 'Income'
+                                        : (widget.title == 'Expense' && name == 'From')
+                                            ? element.categoryType != 'OpeningBalance' && element.categoryType != 'Person' && element.categoryType != 'Expense' && element.categoryType != 'Income'
+                                            : element.categoryType != 'Cash',
+                          )
+                            .map((ledger) {
+                            return DropdownMenuItem(
+                              value: ledger.name,
+                              child: Row(
+                                children: [
+                                  Text(ledger.name),
+                                  const SizedBox(width: 8),
+                                  Text('Type: ${ledger.categoryType}'),
+                                ],
+                              ),
+                            );
+                          }).toList()
+                        : [
+                            const DropdownMenuItem(
+                              value: null,
+                              child: Text('No Ledger available'),
+                            )
+                          ],
+                    onChanged: (value) {
+                      if (state.ledgerList.isNotEmpty) {
+                        if (name == "From") {
+                          categoryFrom = value.toString();
+                        } else {
+                          categoryTo = value.toString();
+                        }
+                      }
+                    },
+                  ),
+                );
+              } else {
+                return Text('No data found');
+              }
+            },
           ),
         ],
       ),

@@ -38,7 +38,7 @@ class LedgerPageView extends StatelessWidget {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
-                      return _buildCard(state.ledgerList[index]);
+                      return _buildCard(context, state.ledgerList[index]);
                     },
                   );
                 } else if (state is LegerErrorState) {
@@ -68,10 +68,41 @@ class LedgerPageView extends StatelessWidget {
   }
 }
 
-Widget _buildCard(LedgerEntity ledgerEntity) {
-  return AppCardLayoutView(
-    child: ListTile(
-      title: Text(ledgerEntity.name),
+Widget _buildCard(BuildContext context, LedgerEntity ledgerEntity) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+    child: AppCardLayoutView(
+      child: ListTile(
+        title: Text(ledgerEntity.name),
+        subtitle: Row(
+          spacing: 4,
+          children: [
+            Text(ledgerEntity.openingBalanceType.toString()),
+            Text(ledgerEntity.openingBalance.toString()),
+            SizedBox(width: 8),
+            Text(
+              ledgerEntity.categoryType.toString(),
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        trailing: BlocBuilder<LedgerBloc, LedgerState>(
+          builder: (context, state) {
+            if (state is LedgerLoadedSuccessState) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted successfully')));
+            }
+            return InkWell(
+              onTap: () {
+                context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
+              },
+              child: Icon(
+                Icons.delete_outline,
+                color: Colors.redAccent,
+              ),
+            );
+          },
+        ),
+      ),
     ),
   );
 }

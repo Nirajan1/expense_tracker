@@ -5,7 +5,7 @@ abstract class LedgerDataSource {
   Future<void> addLedger({required LedgerModel ledgerModel});
   Future<void> updateLedger({required LedgerModel ledgerModel});
   Future<void> deleteLedger({required int id});
-  Future<List<LedgerModel>> getLedgers();
+  Future<List<LedgerModel>> getLedgers({String? categoryType});
 }
 
 class LedgerDataSourceImpl implements LedgerDataSource {
@@ -34,8 +34,18 @@ class LedgerDataSourceImpl implements LedgerDataSource {
   }
 
   @override
-  Future<List<LedgerModel>> getLedgers() async {
+  Future<List<LedgerModel>> getLedgers({String? categoryType}) async {
     return ledgerBox.getAll();
+    //  if (categoryType != null) {
+    //   return ledgerBox
+    //       .query(
+    //         LedgerModel_.categoryType.equals(categoryType),
+    //       )
+    //       .build()
+    //       .find();
+    // } else {
+    //   return ledgerBox.getAll();
+    // }
   }
 
   @override

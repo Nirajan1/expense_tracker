@@ -21,11 +21,14 @@ class AllDataPageView extends StatelessWidget {
                   return CircularProgressIndicator();
                 } else if (state is TransactionLoaded) {
                   if (state.transactionsEntity.isEmpty) {
-                    return Text(
-                      'No transactions available',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                    return Padding(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.34),
+                      child: Text(
+                        'No transactions available',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
                     );
                   }
                   int itemCount = state.transactionsEntity.length;

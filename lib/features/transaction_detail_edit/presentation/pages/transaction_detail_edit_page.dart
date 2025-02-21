@@ -2,6 +2,7 @@ import 'package:expense_tracker/core/app_colors.dart';
 import 'package:expense_tracker/core/app_top_container.dart';
 import 'package:expense_tracker/features/add_transaction/domain_layer/entity/transaction_entity.dart';
 import 'package:expense_tracker/features/add_transaction/presentation/bloc/add_income_expense_bloc.dart';
+import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -55,9 +56,9 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
               const SizedBox(height: 18),
               _buildDateField(context),
               const SizedBox(height: 18),
-              _buildCategory(context, 'From', categoryFrom.toString()),
+              _buildCategory(context, transactionType == "Expense" ? 'To' : 'From', transactionType == "Expense" ? categoryTo.toString() : categoryFrom.toString()),
               const SizedBox(height: 18),
-              _buildCategory(context, 'To', categoryTo.toString()),
+              _buildCategory(context, transactionType == "Expense" ? 'From' : 'To', transactionType == "Expense" ? categoryFrom.toString() : categoryTo.toString()),
               const SizedBox(height: 18),
               _buildInputField(context, 'Transaction Amount', _amountController),
               const SizedBox(height: 18),
@@ -225,41 +226,70 @@ class _TransactionDetailEditPageViewState extends State<TransactionDetailEditPag
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title == 'Type' ? 'Transaction $title' : 'Transaction Category $title',
+            title == 'Type' ? 'Transaction $title' : 'Transaction Ledger $title',
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 14),
-          ButtonTheme(
-            alignedDropdown: true,
-            child: DropdownButtonFormField(
-              value: selectedValue,
-              style: Theme.of(context).textTheme.labelLarge,
-              dropdownColor: AppColors.whiteColor,
-              hint: Text('Select a category'),
-              items: title == 'Type'
-                  ? [
+          title == "Type"
+              ? ButtonTheme(
+                  alignedDropdown: true,
+                  child: DropdownButtonFormField(
+                    value: selectedValue,
+                    style: Theme.of(context).textTheme.labelLarge,
+                    dropdownColor: AppColors.whiteColor,
+                    hint: Text('Select a category'),
+                    items: [
                       DropdownMenuItem(value: 'income', child: Text('Income')),
                       DropdownMenuItem(value: 'expense', child: Text('Expense')),
-                    ]
-                  : [
-                      DropdownMenuItem(value: 'Person', child: Text('Person')),
-                      DropdownMenuItem(value: 'Cash', child: Text('Cash')),
-                      DropdownMenuItem(value: 'Income', child: Text('Income')),
-                      DropdownMenuItem(value: 'Expense', child: Text('Expense')),
-                      DropdownMenuItem(value: 'Bank', child: Text('Bank')),
-                      DropdownMenuItem(value: 'Opening Balance', child: Text('Opening Balance')),
                     ],
-              onChanged: (value) {
-                if (title == "From") {
-                  categoryFrom = value;
-                } else if (title == "To") {
-                  categoryTo = value;
-                } else if (title == "Type") {
-                  transactionType = value;
-                }
-              },
-            ),
-          ),
+                    onChanged: (value) {
+                      if (title == "Type") {
+                        transactionType = value;
+                      }
+                    },
+                  ),
+                )
+              : BlocBuilder<LedgerBloc, LedgerState>(
+                  builder: (context, state) {
+                    if (state is LedgerLoadingState) {
+                      return SizedBox.shrink();
+                    } else if (state is LedgerLoadedState) {
+                      return ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonFormField(
+                          value: selectedValue,
+                          style: Theme.of(context).textTheme.labelLarge,
+                          dropdownColor: AppColors.whiteColor,
+                          hint: Text('Select a category'),
+                          items: state.ledgerList
+                              .map(
+                                (e) => DropdownMenuItem(
+                                  value: e.name,
+                                  child: Text(e.name),
+                                ),
+                              )
+                              .toList(), //  [
+
+                          //         DropdownMenuItem(value: 'Cash', child: Text('Cash')),
+                          //         DropdownMenuItem(value: 'Income', child: Text('Income')),
+                          //         DropdownMenuItem(value: 'Expense', child: Text('Expense')),
+                          //         DropdownMenuItem(value: 'Bank', child: Text('Bank')),
+                          //         DropdownMenuItem(value: 'Opening Balance', child: Text('Opening Balance')),
+                          //       ],
+                          onChanged: (value) {
+                            if (title == "From") {
+                              categoryFrom = value;
+                            } else if (title == "To") {
+                              categoryTo = value;
+                            }
+                          },
+                        ),
+                      );
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  },
+                ),
         ],
       ),
     );

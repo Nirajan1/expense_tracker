@@ -1,7 +1,9 @@
 import 'package:expense_tracker/core/app_colors.dart';
 import 'package:expense_tracker/features/add_transaction/presentation/pages/add_income_expense.dart';
 import 'package:expense_tracker/features/home/presentation/home_page.dart';
+import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddTransactionPageView extends StatelessWidget {
   const AddTransactionPageView({super.key});
@@ -69,6 +71,7 @@ Widget _rowCardWidgets(BuildContext context) {
                   title: 'Income',
                 ),
               ));
+              context.read<LedgerBloc>().add(GetAllLedgersClickEvent());
             },
             child: CustomCardWidget(
               height: 180,
@@ -113,6 +116,7 @@ Widget _rowCardWidgets(BuildContext context) {
                   title: 'Expense',
                 ),
               ));
+              context.read<LedgerBloc>().add(GetAllLedgersClickEvent());
             },
             child: CustomCardWidget(
               height: 180,
@@ -141,7 +145,7 @@ Widget _rowCardWidgets(BuildContext context) {
                   ),
                   const SizedBox(height: 1),
                   Text(
-                    'Add your income',
+                    'Add your Expense',
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.w400),
                   ),
                 ],

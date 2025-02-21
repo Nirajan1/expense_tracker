@@ -1,3 +1,4 @@
+import 'package:expense_tracker/features/category/data_layer/model/category_model.dart';
 import 'package:expense_tracker/features/ledger/domain_layer/entity/ledger_entity.dart';
 import 'package:objectbox/objectbox.dart';
 
@@ -9,7 +10,8 @@ class LedgerModel {
   final String categoryType;
   final int openingBalance;
   final String openingBalanceType;
-
+  // Relation: A ledger belongs to one category
+  final category = ToOne<CategoryModel>();
   LedgerModel({
     this.id = 0,
     required this.name,
@@ -20,7 +22,6 @@ class LedgerModel {
 
   factory LedgerModel.fromEntity(LedgerEntity ledgerEntity) {
     return LedgerModel(
-      id: ledgerEntity.id,
       name: ledgerEntity.name,
       categoryType: ledgerEntity.categoryType,
       openingBalance: ledgerEntity.openingBalance,

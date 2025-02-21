@@ -4,7 +4,7 @@ import 'package:expense_tracker/features/ledger/domain_layer/repositories/ledger
 class GetAllLedgerUseCase {
   final LedgerRepositories ledgerRepositories;
   const GetAllLedgerUseCase({required this.ledgerRepositories});
-  Future<List<LedgerEntity>> getAllLedgers() async {
+  Future<List<LedgerEntity>> getAllLedgers({String? categoryType}) async {
     return await ledgerRepositories.getAllLedgers();
   }
 }

@@ -244,9 +244,12 @@ Widget _bottomContainer(BuildContext context) {
               return CircularProgressIndicator();
             } else if (state is TransactionLoaded) {
               if (state.transactionsEntity.isEmpty) {
-                return Text(
-                  'No transactions available',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                return Padding(
+                  padding: const EdgeInsets.only(top: 60),
+                  child: Text(
+                    'No transactions available',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 );
               }
               int itemCount = state.transactionsEntity.length;

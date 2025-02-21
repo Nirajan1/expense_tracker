@@ -26,10 +26,12 @@ class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
     on<GetAllLedgersClickEvent>(getAllLedgersClickEvent);
     on<LedgerDeleteClickEvent>(ledgerDeleteClickEvent);
     on<LedgerUpdateClickEvent>(ledgerUpdateClickEvent);
+    on<GroupSelectedClickEvent>(groupSelectedClickEvent);
   }
   FutureOr<void> ledgerAddClickEvent(LedgerAddClickEvent event, Emitter<LedgerState> emit) async {
     emit(LedgerLoadingState());
     try {
+      print('bloc ${event.ledgerEntity}');
       await addLedgerUseCase.addLedger(ledgerEntity: event.ledgerEntity);
       emit(LedgerLoadedSuccessState());
       add(GetAllLedgersClickEvent());
@@ -52,7 +54,9 @@ class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
   FutureOr<void> ledgerDeleteClickEvent(LedgerDeleteClickEvent event, Emitter<LedgerState> emit) async {
     emit(LedgerLoadingState());
     try {
+      print(event.ledgerId);
       await deleteLedgerUseCase.deleteLedger(ledgerId: event.ledgerId);
+      emit(LedgerLoadedSuccessState());
       add(GetAllLedgersClickEvent());
     } catch (e) {
       emit(LegerErrorState(error: e.toString()));
@@ -63,9 +67,15 @@ class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
     emit(LedgerLoadingState());
     try {
       await updateLedgerUseCase.updateLedger(ledgerEntity: event.ledgerEntity);
+      emit(LedgerLoadedSuccessState());
       add(GetAllLedgersClickEvent());
     } catch (e) {
       emit(LegerErrorState(error: e.toString()));
     }
+  }
+
+  FutureOr<void> groupSelectedClickEvent(GroupSelectedClickEvent event, Emitter<LedgerState> emit) async {
+    print('blockingv${event.group}');
+    emit(GroupSelectedState(selectedGroup: event.group));
   }
 }

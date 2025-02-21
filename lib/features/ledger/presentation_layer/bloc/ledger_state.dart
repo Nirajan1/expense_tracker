@@ -22,3 +22,8 @@ class LedgerLoadedState extends LedgerState {
   final List<LedgerEntity> ledgerList;
   const LedgerLoadedState({required this.ledgerList});
 }
+
+class GroupSelectedState extends LedgerState {
+  final String selectedGroup;
+  const GroupSelectedState({required this.selectedGroup});
+}

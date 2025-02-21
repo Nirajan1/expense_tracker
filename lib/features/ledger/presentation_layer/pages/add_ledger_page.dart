@@ -16,13 +16,15 @@ class AddLedgerPageView extends StatefulWidget {
 class _AddLedgerPageViewState extends State<AddLedgerPageView> {
   final TextEditingController _ledgerNameController = TextEditingController();
   final TextEditingController _openingBalanceController = TextEditingController();
-  String selectedValue = '';
-  final String openingBalanceValue = 'Cr';
+  final TextEditingController _openingBalanceAmountController = TextEditingController();
+  String? selectedValue = '';
+  String openingBalanceValue = 'Dr';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
     _ledgerNameController.dispose();
     _openingBalanceController.dispose();
+    _openingBalanceAmountController.dispose();
     super.dispose();
   }
 
@@ -37,8 +39,55 @@ class _AddLedgerPageViewState extends State<AddLedgerPageView> {
             children: [
               AppTopContainer(title: 'Add Ledger'),
               _buildInputField(context, 'Ledger Name'),
-              _buildCategory(context, 'Group', selectedValue),
-              _buildOpeningStock(context),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Group',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 14),
+                    BlocBuilder<CategoryBloc, CategoryState>(
+                      builder: (context, state) {
+                        if (state is CategoryLoadedState) {
+                          if (state.categoryEntity.isEmpty) {
+                            return const Text("No categories available");
+                          }
+                          return ButtonTheme(
+                            alignedDropdown: true,
+                            child: DropdownButtonFormField<String>(
+                              style: Theme.of(context).textTheme.labelLarge,
+                              dropdownColor: AppColors.whiteColor,
+                              hint: const Text('Select a category'),
+                              value: selectedValue!.isNotEmpty ? selectedValue : null,
+                              validator: (value) => value == null || value.isEmpty ? 'group is required' : null,
+                              items: state.categoryEntity
+                                  .map(
+                                    (category) => DropdownMenuItem<String>(
+                                      value: category.name,
+                                      child: Text(category.name),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selectedValue = value.toString();
+                                });
+                                print(selectedValue);
+                              },
+                            ),
+                          );
+                        } else {
+                          return const SizedBox();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              _buildOpeningBalance(context),
             ],
           ),
         ),
@@ -70,26 +119,28 @@ class _AddLedgerPageViewState extends State<AddLedgerPageView> {
                 onPressed: state is LedgerLoadingState
                     ? null
                     : () {
-                        // Map data = {
-                        //   'amount': _transactionAmountController.text,
-                        //   'date': _transactionDateController.text,
-                        //   'categoryFrom': categoryFrom.toString(),
-                        //   'categoryTo': categoryTo.toString(),
-                        //   'type': widget.title.toLowerCase(),
-                        // };
-                        // print(data);
                         if (_formKey.currentState!.validate()) {
+                          final categoryEntity = (context.read<CategoryBloc>().state as CategoryLoadedState).categoryEntity;
+                          final selectedCategory = categoryEntity.firstWhere(
+                            (category) => category.name == selectedValue,
+                          );
+                          // Create the LedgerEntity to pass to LedgerBloc
+                          final newLedger = LedgerEntity(
+                            id: null,
+                            name: _ledgerNameController.text,
+                            categoryType: selectedCategory.name,
+                            openingBalance: int.parse(_openingBalanceAmountController.text),
+                            openingBalanceType: openingBalanceValue,
+                          );
+
+                          // Add the ledger to the ledger bloc
                           context.read<LedgerBloc>().add(
-                                LedgerAddClickEvent(
-                                    ledgerEntity: LedgerEntity(
-                                  id: 0,
-                                  name: _ledgerNameController.text,
-                                  categoryType: selectedValue,
-                                  openingBalance: _openingBalanceController.text as int,
-                                  openingBalanceType: openingBalanceValue,
-                                )),
+                                LedgerAddClickEvent(ledgerEntity: newLedger),
                               );
 
+                          _ledgerNameController.clear();
+                          _openingBalanceController.clear();
+                          _openingBalanceAmountController.clear();
                           Navigator.of(context).pop();
                         }
                       },
@@ -134,7 +185,8 @@ class _AddLedgerPageViewState extends State<AddLedgerPageView> {
           const SizedBox(height: 14),
           TextFormField(
             controller: _ledgerNameController,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
               hintText: 'Enter a Ledger name',
               hintStyle: Theme.of(context).textTheme.bodyMedium,
@@ -146,133 +198,85 @@ class _AddLedgerPageViewState extends State<AddLedgerPageView> {
     );
   }
 
-  Widget _buildCategory(BuildContext context, String title, String selectedValue) {
+//   Widget _buildCategory(BuildContext context, String title, String selectedValue) {
+//     return
+
+//  }
+
+  Widget _buildOpeningBalance(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            'Opening Balance',
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 14),
-          BlocBuilder<CategoryBloc, CategoryState>(
-            builder: (context, state) {
-              if (state is CategoryLoadedState) {
-                if (state.categoryEntity.isEmpty) {
-                  return const Text("No categories available");
-                }
-                return ButtonTheme(
-                  alignedDropdown: true,
-                  child: DropdownButtonFormField<String>(
-                    style: Theme.of(context).textTheme.labelLarge,
-                    dropdownColor: AppColors.whiteColor,
-                    hint: const Text('Select a category'),
-                    value: selectedValue.isNotEmpty ? selectedValue : null,
-                    validator: (value) => value == null || value.isEmpty ? 'group is required' : null,
-                    items: state.categoryEntity
-                        .map(
-                          (category) => DropdownMenuItem<String>(
-                            value: category.name,
-                            child: Text(category.name),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      selectedValue = value!;
-                    },
+          TextFormField(
+            controller: _openingBalanceAmountController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.zero,
+              prefixIcon: Container(
+                width: MediaQuery.of(context).size.width * 0.2,
+                margin: EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  border: Border.all(
+                    width: 0.5,
+                    color: Colors.transparent,
                   ),
-                );
-              } else {
-                return const SizedBox();
-              }
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOpeningStock(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Opening Stock',
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 14),
-        DrCrDropDownWidget(
-          controller: _openingBalanceController,
-          value: openingBalanceValue,
-        ),
-        // TextFormField(
-        //   keyboardType: TextInputType.number,
-        //   decoration: InputDecoration(
-        //     hintText: 'Enter opening stock',
-        //     hintStyle: Theme.of(context).textTheme.bodyMedium,
-        //   ),
-        //   validator: (value) => value == null || value.isEmpty ? 'Opening stock is required' : null,
-        // ),
-      ],
-    );
-  }
-}
-
-class DrCrDropDownWidget extends StatelessWidget {
-  final TextEditingController controller;
-  final String value;
-  const DrCrDropDownWidget({
-    required this.controller,
-    required this.value,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.9,
-      child: Row(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.9 - MediaQuery.of(context).size.width * 0.7,
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              border: Border.all(
-                width: 0.5,
-                color: Colors.transparent,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    topLeft: Radius.circular(10),
+                  ),
+                ),
+                child: ButtonTheme(
+                  alignedDropdown: true,
+                  child: DropdownButton<String>(
+                    value: openingBalanceValue.toString(),
+                    dropdownColor: AppColors.whiteColor,
+                    isExpanded: true,
+                    items: const [
+                      DropdownMenuItem(value: 'Cr', child: Text('Cr')),
+                      DropdownMenuItem(value: 'Dr', child: Text('Dr')),
+                    ],
+                    onChanged: (newValue) {
+                      setState(() {
+                        openingBalanceValue = newValue!;
+                      });
+                    },
+                    alignment: Alignment.bottomCenter,
+                    // padding: const EdgeInsets.symmetric(horizontal: 8),
+                    style: Theme.of(context).textTheme.labelLarge, // Text style for the dropdown items.
+                  ),
+                ),
               ),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                topLeft: Radius.circular(10),
-              ),
+              hintText: '',
+              hintStyle: Theme.of(context).textTheme.bodyMedium,
             ),
-            child: ButtonTheme(
-              alignedDropdown: true,
-              child: DropdownButton<String>(
-                value: value.toString(),
-                dropdownColor: AppColors.whiteColor,
-                isExpanded: true,
-                items: const [
-                  DropdownMenuItem(value: 'Cr', child: Text('Cr')),
-                  DropdownMenuItem(value: 'Dr', child: Text('Dr')),
-                ],
-                onChanged: (newValue) {},
-                alignment: Alignment.bottomCenter,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                style: Theme.of(context).textTheme.labelLarge, // Text style for the dropdown items.
-              ),
-            ),
-          ),
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: TextFormField(),
-            ),
+            validator: (value) => value == null || value.isEmpty ? 'Opening balance is required' : null,
           ),
         ],
       ),
     );
   }
 }
+
+// class DrCrDropDownWidget extends StatelessWidget {
+//   final TextEditingController controller;
+//   final String value;
+//   const DrCrDropDownWidget({
+//     required this.controller,
+//     required this.value,
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return
+
+//   }
+// }

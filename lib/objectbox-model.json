@@ -71,11 +71,17 @@
           "type": 1
         }
       ],
-      "relations": []
+      "relations": [
+        {
+          "id": "1:8130895950978445208",
+          "name": "ledger",
+          "targetId": "5:6798321023293377370"
+        }
+      ]
     },
     {
       "id": "5:6798321023293377370",
-      "lastPropertyId": "5:8556637126393128510",
+      "lastPropertyId": "6:317696356377899297",
       "name": "LedgerModel",
       "properties": [
         {
@@ -103,14 +109,22 @@
           "id": "5:8556637126393128510",
           "name": "openingBalanceType",
           "type": 9
+        },
+        {
+          "id": "6:317696356377899297",
+          "name": "categoryId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "4:6351683410353338088",
+          "relationTarget": "CategoryModel"
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "5:6798321023293377370",
-  "lastIndexId": "3:4714854442517657664",
-  "lastRelationId": "0:0",
+  "lastIndexId": "4:6351683410353338088",
+  "lastRelationId": "1:8130895950978445208",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,

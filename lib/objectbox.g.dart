@@ -88,12 +88,17 @@ final _entities = <obx_int.ModelEntity>[
             type: 1,
             flags: 0)
       ],
-      relations: <obx_int.ModelRelation>[],
+      relations: <obx_int.ModelRelation>[
+        obx_int.ModelRelation(
+            id: const obx_int.IdUid(1, 8130895950978445208),
+            name: 'ledger',
+            targetId: const obx_int.IdUid(5, 6798321023293377370))
+      ],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
       id: const obx_int.IdUid(5, 6798321023293377370),
       name: 'LedgerModel',
-      lastPropertyId: const obx_int.IdUid(5, 8556637126393128510),
+      lastPropertyId: const obx_int.IdUid(6, 317696356377899297),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -120,7 +125,14 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(5, 8556637126393128510),
             name: 'openingBalanceType',
             type: 9,
-            flags: 0)
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 317696356377899297),
+            name: 'categoryId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(4, 6351683410353338088),
+            relationTarget: 'CategoryModel')
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
@@ -162,8 +174,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
       lastEntityId: const obx_int.IdUid(5, 6798321023293377370),
-      lastIndexId: const obx_int.IdUid(3, 4714854442517657664),
-      lastRelationId: const obx_int.IdUid(0, 0),
+      lastIndexId: const obx_int.IdUid(4, 6351683410353338088),
+      lastRelationId: const obx_int.IdUid(1, 8130895950978445208),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [6114446958660389306, 4236097693042086683],
       retiredIndexUids: const [],
@@ -235,7 +247,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
     CategoryModel: obx_int.EntityDefinition<CategoryModel>(
         model: _entities[1],
         toOneRelations: (CategoryModel object) => [],
-        toManyRelations: (CategoryModel object) => {},
+        toManyRelations: (CategoryModel object) => {
+              obx_int.RelInfo<CategoryModel>.toMany(1, object.id): object.ledger
+            },
         getId: (CategoryModel object) => object.id,
         setId: (CategoryModel object, int id) {
           object.id = id;
@@ -267,12 +281,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
               name: nameParam,
               slug: slugParam,
               isDefault: isDefaultParam);
-
+          obx_int.InternalToManyAccess.setRelInfo<CategoryModel>(object.ledger,
+              store, obx_int.RelInfo<CategoryModel>.toMany(1, object.id));
           return object;
         }),
     LedgerModel: obx_int.EntityDefinition<LedgerModel>(
         model: _entities[2],
-        toOneRelations: (LedgerModel object) => [],
+        toOneRelations: (LedgerModel object) => [object.category],
         toManyRelations: (LedgerModel object) => {},
         getId: (LedgerModel object) => object.id,
         setId: (LedgerModel object, int id) {
@@ -283,12 +298,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final categoryTypeOffset = fbb.writeString(object.categoryType);
           final openingBalanceTypeOffset =
               fbb.writeString(object.openingBalanceType);
-          fbb.startTable(6);
+          fbb.startTable(7);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, categoryTypeOffset);
           fbb.addInt64(3, object.openingBalance);
           fbb.addOffset(4, openingBalanceTypeOffset);
+          fbb.addInt64(5, object.category.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -313,7 +329,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               categoryType: categoryTypeParam,
               openingBalance: openingBalanceParam,
               openingBalanceType: openingBalanceTypeParam);
-
+          object.category.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
+          object.category.attach(store);
           return object;
         })
   };
@@ -365,6 +383,10 @@ class CategoryModel_ {
   /// See [CategoryModel.isDefault].
   static final isDefault =
       obx.QueryBooleanProperty<CategoryModel>(_entities[1].properties[3]);
+
+  /// see [CategoryModel.ledger]
+  static final ledger = obx.QueryRelationToMany<CategoryModel, LedgerModel>(
+      _entities[1].relations[0]);
 }
 
 /// [LedgerModel] entity fields to define ObjectBox queries.
@@ -388,4 +410,8 @@ class LedgerModel_ {
   /// See [LedgerModel.openingBalanceType].
   static final openingBalanceType =
       obx.QueryStringProperty<LedgerModel>(_entities[2].properties[4]);
+
+  /// See [LedgerModel.category].
+  static final category = obx.QueryRelationToOne<LedgerModel, CategoryModel>(
+      _entities[2].properties[5]);
 }

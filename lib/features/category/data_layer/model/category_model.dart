@@ -1,4 +1,5 @@
 import 'package:expense_tracker/features/category/domain_layer/entity/category_entity.dart';
+import 'package:expense_tracker/features/ledger/data_layer/models/ledger_model.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
@@ -9,7 +10,8 @@ class CategoryModel {
   @Unique()
   final String slug;
   final bool isDefault;
-
+// Relation: A category can have many ledgers
+  final ledger = ToMany<LedgerModel>();
   CategoryModel({
     this.id = 0, // Keep default as 0, ObjectBox will assign a unique ID
     required this.name,

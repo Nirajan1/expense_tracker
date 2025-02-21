@@ -2,6 +2,7 @@ import 'package:expense_tracker/core/app_colors.dart';
 import 'package:expense_tracker/core/app_top_container.dart';
 import 'package:expense_tracker/features/add_transaction/domain_layer/entity/transaction_entity.dart';
 import 'package:expense_tracker/features/add_transaction/presentation/bloc/add_income_expense_bloc.dart';
+import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
 import 'package:expense_tracker/features/transaction_detail_edit/presentation/pages/transaction_detail_edit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,6 +32,7 @@ class TransactionDetailPageView extends StatelessWidget {
               index: transactionEntity.id,
               callback: () {
                 print(transactionEntity.id);
+                context.read<LedgerBloc>().add(GetAllLedgersClickEvent());
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -84,7 +86,7 @@ class TransactionDetailPageView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Transaction Category $title',
+            'Transaction Ledger $title',
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 14),

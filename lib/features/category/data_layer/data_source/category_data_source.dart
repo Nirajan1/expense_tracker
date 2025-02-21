@@ -95,6 +95,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
         CategoryModel(name: 'Income', slug: 'income', isDefault: true),
         CategoryModel(name: 'Cash', slug: 'cash', isDefault: true),
         CategoryModel(name: 'Bank', slug: 'bank', isDefault: true),
+        CategoryModel(name: 'OpeningBalance', slug: 'opening', isDefault: true),
       ];
       categoryBox.putMany(defaultCategory);
     } else {
