@@ -19,6 +19,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   Future<void> addTransaction(TransactionModel transactionModel) async {
     // transactionBox.put(transactionModel);
     transactionBox.put(transactionModel);
+    print('noice $transactionModel');
     // print('Transaction added with ID: $assignedId'); // Debugging print
     // Ensure the ID is saved
   }

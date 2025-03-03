@@ -31,7 +31,6 @@ import '../features/ledger/domain_layer/user_case/get_all_ledger_use_case.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  print('your are in di.dart page: ');
   final dir = await getApplicationDocumentsDirectory();
   // print('Database directory: ${dir.path}/objectbox');
   // ObjectBox store
