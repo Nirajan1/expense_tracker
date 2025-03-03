@@ -6,11 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class LedgerDetailPageView extends StatelessWidget {
   final String name;
   final String ledgerCategory;
-  const LedgerDetailPageView({
-    required this.name,
-    required this.ledgerCategory,
-    super.key,
-  });
+  const LedgerDetailPageView({required this.name, required this.ledgerCategory, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,48 +29,30 @@ class LedgerDetailPageView extends StatelessWidget {
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: DataTable(
-                          horizontalMargin: 1,
-                          // columnSpacing: 14,
-                          columns: [
-                            DataColumn(
-                              label: Text('Date'),
-                            ),
-                            DataColumn(
-                              label: Text('Particular'),
-                            ),
-                            DataColumn(
-                              label: Text('Dr'),
-                            ),
-                            DataColumn(
-                              label: Text('Cr'),
-                            ),
-                            DataColumn(
-                              label: Text('Amount'),
-                            ),
-                          ],
-                          rows: filteredTransactions.map((e) {
-                            bool isIncome = e.type == 'income' ;
+                        horizontalMargin: 1,
+                        // columnSpacing: 14,
+                        columns: [
+                          DataColumn(label: Text('Date')),
+                          DataColumn(label: Text('Particular')),
+                          DataColumn(label: Text('Dr')),
+                          DataColumn(label: Text('Cr')),
+                          DataColumn(label: Text('Amount')),
+                        ],
+                        rows:
+                            filteredTransactions.map((e) {
+                              // bool isIncome = e.type == 'income';
 
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(e.date.substring(0, 10))),
-                                DataCell(Text(e.ledgerTo)),
-                                DataCell(isIncome ? Text(e.amount) : Text('0')),
-                                DataCell(isIncome ? Text('0') : Text(e.amount)),
-                                DataCell(Text('0')),
-                              ],
-                            );
-                          }).toList()
-
-                          // [
-                          //   DataRow(cells: [
-                          //     DataCell(Text('ValCol1')),
-                          //     DataCell(Text('ValCol2')),
-                          //     DataCell(Text('ValCol2')),
-                          //     DataCell(Text('ValCol2')),
-                          //   ]),
-                          // ],
-                          ),
+                              return DataRow(
+                                cells: [
+                                  DataCell(Text(e.date.substring(0, 10))),
+                                  DataCell(Text(e.ledgerFrom == name ? "To ${e.ledgerTo}" : "Received from ${e.ledgerFrom}")),
+                                  DataCell(e.ledgerFrom == name ? Text('0') : Text(e.amount)),
+                                  DataCell(e.ledgerFrom == name ? Text(e.amount) : Text('0')),
+                                  DataCell(Text('0')),
+                                ],
+                              );
+                            }).toList(),
+                      ),
                     ),
                   );
 
@@ -203,7 +181,7 @@ class LedgerDetailPageView extends StatelessWidget {
                 }
               },
             ),
-          )
+          ),
         ],
       ),
     );

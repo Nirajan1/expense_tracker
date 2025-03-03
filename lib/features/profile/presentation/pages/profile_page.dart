@@ -1,10 +1,6 @@
 import 'package:expense_tracker/core/app_colors.dart';
-import 'package:expense_tracker/features/category/presentation/pages/category_list_page.dart';
-import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
-import 'package:expense_tracker/features/ledger/presentation_layer/pages/ledger_list_page.dart';
-import 'package:expense_tracker/features/profile/presentation/widgets/card_widget.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfilePageView extends StatelessWidget {
   const ProfilePageView({super.key});
@@ -15,36 +11,7 @@ class ProfilePageView extends StatelessWidget {
       spacing: 16,
       children: [
         _topContainer(context),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: CardWidget(
-            title: 'Category',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CategoryListPageView(),
-                ),
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: CardWidget(
-            title: 'Ledger',
-            onTap: () {
-              context.read<LedgerBloc>().add(GetAllLedgersClickEvent());
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LedgerPageView(),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+       ],
     );
   }
 }
