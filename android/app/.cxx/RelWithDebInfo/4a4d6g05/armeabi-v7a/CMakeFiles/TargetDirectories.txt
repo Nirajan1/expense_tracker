@@ -1,0 +1,2 @@
+/Users/ns/Documents/expense_tracker/android/app/.cxx/RelWithDebInfo/4a4d6g05/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/ns/Documents/expense_tracker/android/app/.cxx/RelWithDebInfo/4a4d6g05/armeabi-v7a/CMakeFiles/rebuild_cache.dir
