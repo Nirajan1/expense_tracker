@@ -1,4 +1,5 @@
 import 'package:expense_tracker/core/app_colors.dart';
+import 'package:expense_tracker/core/app_snack_bar.dart';
 import 'package:expense_tracker/core/app_top_container.dart';
 import 'package:expense_tracker/features/category/presentation/bloc/category_bloc.dart';
 import 'package:expense_tracker/features/ledger/domain_layer/entity/ledger_entity.dart';
@@ -99,14 +100,9 @@ class _AddLedgerPageViewState extends State<AddLedgerPageView> {
           child: BlocConsumer<LedgerBloc, LedgerState>(
             listener: (context, state) {
               if (state is LedgerLoadedSuccessState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Successfully added'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                AppSnackBar.showCustomSnackBar(context, 'Ledger added successfully!', false, isTop: true);
               } else if (state is LegerErrorState) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+                AppSnackBar.showCustomSnackBar(context, state.error, false, isTop: true);
               }
             },
             builder: (context, state) {

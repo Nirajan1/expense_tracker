@@ -19,7 +19,17 @@ class LedgerPageView extends StatelessWidget {
         children: [
           AppTopContainer(title: 'Ledger List'),
           SingleChildScrollView(
-            child: BlocBuilder<LedgerBloc, LedgerState>(
+            child: BlocConsumer<LedgerBloc, LedgerState>(
+              listener: (context, state) {
+                // Listen for successful deletion
+                if (state is LedgerLoadedSuccessState) {
+                  AppSnackBar.showCustomSnackBar(context, 'Ledger deleted successfully!', false, isTop: true);
+                }
+                // Listen for errors
+                else if (state is LegerErrorState) {
+                  AppSnackBar.showCustomSnackBar(context, state.error, false, isTop: true);
+                }
+              },
               builder: (context, state) {
                 if (state is LedgerLoadingState) {
                   return Center(child: CircularProgressIndicator());
@@ -141,7 +151,7 @@ Widget _buildCard(BuildContext context, LedgerEntity ledgerEntity) {
 
             //  BlocBuilder<LedgerBloc, LedgerState>(
             //   builder: (context, state) {
-            //     if (state is LedgerLoadedSuccessState) {
+            //     if (state is ) {
             //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted successfully')));
             //     }
             //     return InkWell(
