@@ -87,7 +87,7 @@ Widget _rowCardWidgets(BuildContext context) {
                     ),
                     child: Center(
                       child: Icon(
-                        Icons.arrow_upward_outlined,
+                        Icons.arrow_downward_outlined,
                         size: 29,
                         color: Colors.white,
                       ),
@@ -132,7 +132,7 @@ Widget _rowCardWidgets(BuildContext context) {
                     ),
                     child: Center(
                       child: Icon(
-                        Icons.arrow_downward_outlined,
+                        Icons.arrow_upward_outlined,
                         size: 29,
                         color: Colors.white,
                       ),

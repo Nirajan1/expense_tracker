@@ -1,4 +1,5 @@
 import 'package:expense_tracker/core/app_colors.dart';
+import 'package:expense_tracker/core/app_snack_bar.dart';
 import 'package:expense_tracker/features/add_transaction/domain_layer/entity/transaction_entity.dart';
 import 'package:expense_tracker/features/add_transaction/presentation/bloc/add_income_expense_bloc.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
@@ -56,14 +57,15 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
           child: BlocConsumer<AddIncomeExpenseBloc, AddIncomeExpenseState>(
             listener: (context, state) {
               if (state is TransactionSuccessState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Successfully added'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(
+                //     content: Text('Successfully added'),
+                //     backgroundColor: Colors.green,
+                //   ),
+                // );
+                AppSnackBar.showCustomSnackBar(context, 'Successfully added', false, isTop: true);
               } else if (state is TransactionErrorState) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+                AppSnackBar.showCustomSnackBar(context, state.error, true, isTop: true);
               }
             },
             builder: (context, state) {
@@ -292,8 +294,8 @@ class _AddIncomeExpensePageViewState extends State<AddIncomeExpensePageView> {
                               child: Row(
                                 children: [
                                   Text(ledger.name),
-                                  const SizedBox(width: 8),
-                                  Text('Type: ${ledger.categoryType}'),
+                                  // const SizedBox(width: 8),
+                                  // Text('Type: ${ledger.categoryType}'),
                                 ],
                               ),
                             );

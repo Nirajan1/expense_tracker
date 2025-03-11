@@ -4,7 +4,6 @@ import 'package:expense_tracker/core/app_top_container.dart';
 import 'package:expense_tracker/features/ledger/domain_layer/entity/ledger_entity.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/pages/add_ledger_page.dart';
-import 'package:expense_tracker/features/ledger/presentation_layer/pages/ledger_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -74,15 +73,15 @@ Widget _buildCard(BuildContext context, LedgerEntity ledgerEntity) {
     padding: const EdgeInsets.symmetric(horizontal: 18.0),
     child: InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LedgerDetailPageView(
-              name: ledgerEntity.name,
-              ledgerCategory: ledgerEntity.categoryType,
-            ),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => LedgerDetailPageView(
+        //       name: ledgerEntity.name,
+        //       ledgerCategory: ledgerEntity.categoryType,
+        //     ),
+        //   ),
+        // );
       },
       child: AppCardLayoutView(
         child: ListTile(

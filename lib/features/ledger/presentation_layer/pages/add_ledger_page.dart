@@ -16,7 +16,7 @@ class AddLedgerPageView extends StatefulWidget {
 class _AddLedgerPageViewState extends State<AddLedgerPageView> {
   final TextEditingController _ledgerNameController = TextEditingController();
   final TextEditingController _openingBalanceController = TextEditingController();
-  final TextEditingController _openingBalanceAmountController = TextEditingController();
+  final TextEditingController _openingBalanceAmountController = TextEditingController(text: '0');
   String? selectedValue = '';
   String openingBalanceValue = 'Dr';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -198,11 +198,6 @@ class _AddLedgerPageViewState extends State<AddLedgerPageView> {
     );
   }
 
-//   Widget _buildCategory(BuildContext context, String title, String selectedValue) {
-//     return
-
-//  }
-
   Widget _buildOpeningBalance(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -240,8 +235,8 @@ class _AddLedgerPageViewState extends State<AddLedgerPageView> {
                     dropdownColor: AppColors.whiteColor,
                     isExpanded: true,
                     items: const [
-                      DropdownMenuItem(value: 'Cr', child: Text('Cr')),
-                      DropdownMenuItem(value: 'Dr', child: Text('Dr')),
+                      DropdownMenuItem(value: 'Cr', child: Text('+')),
+                      DropdownMenuItem(value: 'Dr', child: Text('-')),
                     ],
                     onChanged: (newValue) {
                       setState(() {

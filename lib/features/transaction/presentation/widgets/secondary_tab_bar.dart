@@ -187,11 +187,26 @@ Widget _buildCircularContainer(BuildContext context, String title, Color? color)
                           color: Colors.white,
                         ),
                   ),
-                  Text(
-                    'Rs 40,000',
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          color: Colors.white,
-                        ),
+                  BlocBuilder<AddIncomeExpenseBloc, AddIncomeExpenseState>(
+                    builder: (context, state) {
+                      int total = 0;
+                      if (state is TransactionLoadingState) {
+                        return CircularProgressIndicator();
+                      } else if (state is TransactionLoaded) {
+                        if (state.transactionsEntity.isEmpty) {
+                          total = 0;
+                        } else if (state.transactionsEntity.isNotEmpty) {
+                          total =
+                              state.transactionsEntity.where((element) => element.type[0].toUpperCase() + element.type.substring(1) == title).fold<int>(0, (sum, item) => sum + int.parse(item.amount));
+                        }
+                      }
+                      return Text(
+                        total.toString(),
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: Colors.white,
+                            ),
+                      );
+                    },
                   ),
                 ],
               ),

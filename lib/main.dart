@@ -23,16 +23,16 @@ void main() async {
     ),
   );
   await di.init();
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final bool isLoggedIn = prefs.getBool('loggedIn') ?? false;
-  runApp(MyApp(isLoggedIn: isLoggedIn));
+  // final SharedPreferences prefs = await SharedPreferences.getInstance();
+  // final bool isLoggedIn = prefs.getBool('loggedIn') ?? false;
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final bool isLoggedIn;
+  // final bool isLoggedIn;
   const MyApp({
     super.key,
-    required this.isLoggedIn,
+    // required this.isLoggedIn,
   });
 
   @override
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => di.sl<NavigationBloc>()),
         BlocProvider(create: (context) => di.sl<AddIncomeExpenseBloc>()),
-        BlocProvider(create: (context) => di.sl<CategoryBloc>()..add(GetAllCategoryClickEvent())),
+        BlocProvider(create: (context) => di.sl<CategoryBloc>()),
         BlocProvider(create: (context) => di.sl<LedgerBloc>()),
         BlocProvider(create: (context) => di.sl<AuthBloc>()),
       ],
@@ -49,7 +49,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Expense tracker',
         theme: AppTheme.lightTheme,
-        home: isLoggedIn ? BottomNavigationView() : const SignInPageView(),
+        home: BottomNavigationView(),
+        // home: isLoggedIn ? BottomNavigationView() : const SignInPageView(),
       ),
     );
   }

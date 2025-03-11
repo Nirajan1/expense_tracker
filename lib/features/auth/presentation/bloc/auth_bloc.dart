@@ -16,7 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required this.signUpUseCase, required this.getUserUseCase}) : super(AuthInitial()) {
     on<SignUpClickEvent>(signUpClickEvent);
     on<TogglePasswordVisibilityEvent>(togglePasswordVisibilityEvent);
-    // on<GetUserBynameClickEvent>(getUserBynameClickEvent);
+    on<GetUserBynameClickEvent>(getUserBynameClickEvent);
     on<SignInClickEvent>(signInClickEvent);
   }
 
@@ -49,25 +49,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  // FutureOr<void> getUserBynameClickEvent(GetUserBynameClickEvent event, Emitter<AuthState> emit) async {
-  //   print('insideBloc ${event.userName}');
-  //   final userEntity = await getUserUseCase.getUser(userName: event.userName);
-  //   print('entity is $userEntity');
-  //   emit(GetUserByNameState(signUpEntity: userEntity));
-  // }
+  FutureOr<void> getUserBynameClickEvent(GetUserBynameClickEvent event, Emitter<AuthState> emit) async {
+    print('insideBloc ${event.userName}');
+    final userEntity = await getUserUseCase.getUser(userName: event.userName);
+    print('entity is $userEntity');
+    emit(GetUserByNameState(signUpEntity: userEntity));
+  }
 
   FutureOr<void> signInClickEvent(SignInClickEvent event, Emitter<AuthState> emit) async {
     emit(SignInClickLoadingState('loding'));
     try {
       await Future.delayed(const Duration(seconds: 1));
       final user = await getUserUseCase.getUser(userName: event.userName);
-      print('user $user');
+      // print('user $user');
       if (user == null) {
         emit(SignInClickErrorState(errorMessage: 'User not found! Please sign up.'));
       } else if (user.passwordHash != event.password) {
         emit(SignInClickErrorState(errorMessage: 'Incorrect password! Please try again.'));
       } else {
-        print('herer');
+        // print('herer');
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('loggedIn', true);
         emit(SignInLoadingSuccessState(successMessage: user));

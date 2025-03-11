@@ -1,13 +1,24 @@
+import 'package:expense_tracker/core/app_card_layout.dart';
 import 'package:expense_tracker/core/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:expense_tracker/features/category/presentation/pages/category_list_page.dart';
+import 'package:expense_tracker/features/ledger/domain_layer/entity/ledger_entity.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
-import 'package:expense_tracker/features/ledger/presentation_layer/pages/ledger_list_page.dart';
+import 'package:expense_tracker/features/ledger/presentation_layer/pages/ledger_detail_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:expense_tracker/features/report/presentation/widgets/card_widget.dart';
 
-class ReportPageView extends StatelessWidget {
+class ReportPageView extends StatefulWidget {
   const ReportPageView({super.key});
+
+  @override
+  State<ReportPageView> createState() => _ReportPageViewState();
+}
+
+class _ReportPageViewState extends State<ReportPageView> {
+  @override
+  void initState() {
+    context.read<LedgerBloc>().add(GetAllLedgersClickEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,25 +26,57 @@ class ReportPageView extends StatelessWidget {
       body: Column(
         children: [
           _topContainer(context),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: CardWidget(
-              title: 'Category',
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryListPageView()));
-              },
+          SingleChildScrollView(
+            child: SingleChildScrollView(
+              child: BlocBuilder<LedgerBloc, LedgerState>(
+                builder: (context, state) {
+                  if (state is LedgerLoadingState) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is LedgerLoadedState) {
+                    if (state.ledgerList.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
+                          child: Text(
+                            'No Ledger found',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      );
+                    }
+                    return ListView.builder(
+                      itemCount: state.ledgerList.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return _buildCard(context, state.ledgerList[index]);
+                      },
+                    );
+                  } else if (state is LegerErrorState) {
+                    return Text(
+                      state.error,
+                    );
+                  } else {
+                    return Text('No Ledger found error');
+                  }
+                },
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: CardWidget(
-              title: 'Ledger',
-              onTap: () {
-                context.read<LedgerBloc>().add(GetAllLedgersClickEvent());
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LedgerPageView()));
-              },
-            ),
-          ),
+          )
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          //   child: CardWidget(
+          //     title: 'Category',
+          //     onTap: () {},
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          //   child: CardWidget(
+          //     title: 'Ledger',
+          //     onTap: () {},
+          //   ),
+          // ),
         ],
       ),
     );
@@ -59,4 +102,58 @@ class CategoryListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [ListTile(title: Text('Category List', style: Theme.of(context).textTheme.displayMedium), trailing: Icon(Icons.arrow_forward_outlined))]);
   }
+}
+
+Widget _buildCard(BuildContext context, LedgerEntity ledgerEntity) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+    child: InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LedgerDetailPageView(
+              name: ledgerEntity.name,
+              ledgerCategory: ledgerEntity.categoryType,
+              openingBalance: ledgerEntity.openingBalance,
+              openingBalanceType: ledgerEntity.openingBalanceType,
+            ),
+          ),
+        );
+      },
+      child: AppCardLayoutView(
+        child: ListTile(
+          title: Text(ledgerEntity.name),
+          subtitle: Row(
+            spacing: 4,
+            children: [
+              Text(ledgerEntity.openingBalanceType.toString()),
+              Text(ledgerEntity.openingBalance.toString()),
+              SizedBox(width: 8),
+              Text(
+                "Type : ${ledgerEntity.categoryType.toString()}",
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          // trailing: BlocBuilder<LedgerBloc, LedgerState>(
+          //   builder: (context, state) {
+          //     if (state is LedgerLoadedSuccessState) {
+          //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted successfully')));
+          //     }
+          //     return InkWell(
+          //       onTap: () {
+          //         context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
+          //       },
+          //       child: Icon(
+          //         Icons.delete_outline,
+          //         color: Colors.redAccent,
+          //       ),
+          //     );
+          //   },
+          // ),
+        ),
+      ),
+    ),
+  );
 }

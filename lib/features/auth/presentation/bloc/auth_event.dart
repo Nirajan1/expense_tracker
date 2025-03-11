@@ -16,15 +16,15 @@ class SignUpClickEvent extends AuthEvent {
 
 class TogglePasswordVisibilityEvent extends AuthEvent {}
 
-// class GetUserBynameClickEvent extends AuthEvent {
-//   final String userName;
-//   const GetUserBynameClickEvent({
-//     required this.userName,
-//   });
+class GetUserBynameClickEvent extends AuthEvent {
+  final String userName;
+  const GetUserBynameClickEvent({
+    required this.userName,
+  });
 
-//   @override
-//   List<Object> get props => [userName];
-// }
+  @override
+  List<Object> get props => [userName];
+}
 
 class SignInClickEvent extends AuthEvent {
   final String userName;

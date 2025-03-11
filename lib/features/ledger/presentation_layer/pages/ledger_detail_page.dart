@@ -6,7 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class LedgerDetailPageView extends StatelessWidget {
   final String name;
   final String ledgerCategory;
-  const LedgerDetailPageView({required this.name, required this.ledgerCategory, super.key});
+  final int openingBalance;
+  final String openingBalanceType;
+  const LedgerDetailPageView({
+    required this.name,
+    required this.ledgerCategory,
+    required this.openingBalance,
+    required this.openingBalanceType,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,149 +32,98 @@ class LedgerDetailPageView extends StatelessWidget {
                   if (filteredTransactions.isEmpty) {
                     return Text('No transactions found for $name');
                   }
+                  double openingBalanceValue = double.parse(openingBalance.toString());
+                  double runningBalance = openingBalanceType == 'Dr' ? openingBalanceValue : -openingBalanceValue;
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: DataTable(
                         horizontalMargin: 1,
-                        // columnSpacing: 14,
-                        columns: [DataColumn(label: Text('Date')), DataColumn(label: Text('Particular')), DataColumn(label: Text('Dr')), DataColumn(label: Text('Cr'))],
-                        rows:
-                            filteredTransactions.map((e) {
+                        columnSpacing: 20,
+                        headingTextStyle: Theme.of(context).textTheme.titleSmall,
+                        columns: [
+                          DataColumn(label: Text('Date')),
+                          DataColumn(label: Text('Particular')),
+                          DataColumn(label: Text('In')), //dr
+                          DataColumn(label: Text('Out')), //cr
+                          DataColumn(label: Text('Balance')),
+                        ],
+                        rows: [
+                          //opening balance
+                          DataRow(
+                            cells: [
+                              DataCell(Text('')),
+                              DataCell(Text('Opening Balance', style: Theme.of(context).textTheme.labelMedium)),
+                              DataCell(openingBalanceType == 'Dr'
+                                  ? Text(openingBalance.toString(), style: Theme.of(context).textTheme.labelMedium)
+                                  : Text('0', style: Theme.of(context).textTheme.labelMedium)),
+                              DataCell(openingBalanceType == 'Cr'
+                                  ? Text(openingBalance.toString(), style: Theme.of(context).textTheme.labelMedium)
+                                  : Text('0', style: Theme.of(context).textTheme.labelMedium)),
+                              DataCell(
+                                Text(
+                                  openingBalance.toString(),
+                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                                        color: openingBalanceType == 'Dr' ? Colors.green : Colors.red,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          ...filteredTransactions.map(
+                            (e) {
                               // bool isIncome = e.type == 'income';
 
+                              double amount = double.parse(e.amount);
+                              var value = e.ledgerFrom == name ? -amount : amount;
+                              runningBalance += value;
+                              Color balanceColor = runningBalance < 0 ? Colors.red : Colors.green;
                               return DataRow(
                                 cells: [
-                                  DataCell(Text(e.date.substring(0, 10))),
-                                  DataCell(Text(e.ledgerFrom == name ? "To ${e.ledgerTo}" : "Received from ${e.ledgerFrom}")),
-                                  DataCell(e.ledgerFrom == name ? Text('0') : Text(e.amount)),
-                                  DataCell(e.ledgerFrom == name ? Text(e.amount) : Text('0')),
+                                  DataCell(Text(
+                                    e.date.substring(0, 10),
+                                    style: Theme.of(context).textTheme.labelMedium,
+                                  )),
+                                  DataCell(Text(
+                                    e.ledgerFrom == name ? "To ${e.ledgerTo}" : "Received from ${e.ledgerFrom}",
+                                    style: Theme.of(context).textTheme.labelMedium,
+                                  )),
+                                  DataCell(e.ledgerFrom == name
+                                      ? Text(
+                                          '0',
+                                          style: Theme.of(context).textTheme.labelMedium,
+                                        )
+                                      : Text(
+                                          e.amount,
+                                          style: Theme.of(context).textTheme.labelMedium,
+                                        )),
+                                  DataCell(
+                                    e.ledgerFrom == name
+                                        ? Text(
+                                            e.amount,
+                                            style: Theme.of(context).textTheme.labelMedium,
+                                          )
+                                        : Text(
+                                            '0',
+                                            style: Theme.of(context).textTheme.labelMedium,
+                                          ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      runningBalance.toInt().toString(),
+                                      style: Theme.of(context).textTheme.labelMedium!.copyWith(color: balanceColor),
+                                    ),
+                                  ),
                                 ],
                               );
-                            }).toList(),
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   );
-
-                  // ListView.builder(
-                  //   itemCount: filteredTransactions.length,
-                  //   shrinkWrap: true,
-                  //   physics: const NeverScrollableScrollPhysics(),
-                  //   itemBuilder: (BuildContext context, int index) {
-                  //     var transaction = filteredTransactions[index];
-                  //     return Padding(
-                  //       padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  //       child: AppCardLayoutView(
-                  //         child: Column(
-                  //           crossAxisAlignment: CrossAxisAlignment.start,
-                  //           children: [
-                  //             ListTile(
-                  //               title: Row(
-                  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //                 children: [
-                  //                   Row(
-                  //                     children: [
-                  //                       Text('From : '),
-                  //                       Text(state.transactionsEntity[index].ledgerFrom),
-                  //                     ],
-                  //                   ),
-                  //                   Text(
-                  //                     transaction.type[0].toUpperCase() + transaction.type.substring(1),
-                  //                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                  //                           color: isIncome ? Colors.green : Colors.amber[900],
-                  //                         ),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //               subtitle: Row(
-                  //                 children: [
-                  //                   Text('To : '),
-                  //                   Text(state.transactionsEntity[index].ledgerTo),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //             Padding(
-                  //               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  //               child: Text('Date : ${state.transactionsEntity[index].date}'),
-                  //             ),
-                  //             const SizedBox(height: 6),
-                  //             Padding(
-                  //               padding: const EdgeInsets.all(8.0),
-                  //               child: Column(
-                  //                 children: [
-                  //                   Row(
-                  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //                     children: [
-                  //                       Expanded(
-                  //                         child: Container(
-                  //                             decoration: BoxDecoration(
-                  //                               border: Border(
-                  //                                 right: BorderSide(color: AppColors.primaryColor),
-                  //                                 left: BorderSide(color: AppColors.primaryColor),
-                  //                                 bottom: BorderSide(color: AppColors.primaryColor),
-                  //                                 top: BorderSide(color: AppColors.primaryColor),
-                  //                               ),
-                  //                             ),
-                  //                             child: Center(child: Text('Dr'))),
-                  //                       ),
-                  //                       Expanded(
-                  //                         child: Container(
-                  //                           decoration: BoxDecoration(
-                  //                               border: Border(
-                  //                             right: BorderSide(color: AppColors.primaryColor),
-                  //                             top: BorderSide(color: AppColors.primaryColor),
-                  //                             bottom: BorderSide(color: AppColors.primaryColor),
-                  //                           )),
-                  //                           child: Center(
-                  //                             child: Text('Cr'),
-                  //                           ),
-                  //                         ),
-                  //                       ),
-                  //                     ],
-                  //                   ),
-                  //                   Row(
-                  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //                     children: [
-                  //                       // If it's an income, show the amount in Dr, Cr will be 0
-                  //                       Expanded(
-                  //                         child: Container(
-                  //                           decoration: BoxDecoration(
-                  //                             border: Border(
-                  //                               right: BorderSide(color: AppColors.primaryColor),
-                  //                               left: BorderSide(color: AppColors.primaryColor),
-                  //                               bottom: BorderSide(color: AppColors.primaryColor),
-                  //                             ),
-                  //                           ),
-                  //                           child: Center(
-                  //                             child: isIncome ? Text(transaction.amount) : Text('0'),
-                  //                           ),
-                  //                         ),
-                  //                       ),
-                  //                       Expanded(
-                  //                         child: Container(
-                  //                           decoration: BoxDecoration(
-                  //                             border: Border(
-                  //                               right: BorderSide(color: AppColors.primaryColor),
-                  //                               bottom: BorderSide(color: AppColors.primaryColor),
-                  //                             ),
-                  //                           ),
-                  //                           child: Center(
-                  //                             child: !isIncome ? Text(transaction.amount) : Text('0'),
-                  //                           ),
-                  //                         ),
-                  //                       ),
-                  //                     ],
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  // );
                 } else if (state is TransactionErrorState) {
                   return Text('Error: ${state.error}');
                 } else {

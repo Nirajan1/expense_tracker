@@ -19,8 +19,8 @@ class HomePageView extends StatefulWidget {
 class _HomePageViewState extends State<HomePageView> {
   @override
   void initState() {
-    // context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
-    // context.read<CategoryBloc>().add(GetAllCategoryClickEvent());
+    context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
+    context.read<CategoryBloc>().add(GetAllCategoryClickEvent());
     super.initState();
   }
 
@@ -73,7 +73,7 @@ Widget _topContainer(BuildContext context) {
               listener: (context, state) {},
               child: GestureDetector(
                 onTap: () {
-                  context.read<NavigationBloc>().add(ButtonTapEvent(tappedIndex: 3));
+                  context.read<NavigationBloc>().add(ButtonTapEvent(tappedIndex: 4));
                 },
                 child: Padding(
                   padding: EdgeInsets.only(right: padding),
@@ -148,18 +148,18 @@ Widget _buildBudgetCard(BuildContext context) {
             },
           ),
         ),
-        //   Expanded(
-        //     child: CustomCardWidget(
-        //       height: 146,
-        //       child: Column(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           Text('Total balance', overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
-        //           Text('Rs 10,000', overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
+        Expanded(
+          child: CustomCardWidget(
+            height: 146,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Total balance', overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
+                Text('Rs 10,000', overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall),
+              ],
+            ),
+          ),
+        ),
       ],
     ),
   );
