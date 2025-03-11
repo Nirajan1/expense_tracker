@@ -42,6 +42,7 @@ class AddIncomeExpenseBloc extends Bloc<AddIncomeExpenseEvent, AddIncomeExpenseS
   FutureOr<void> incomeExpenseLoadEvent(IncomeExpenseLoadEvent event, Emitter<AddIncomeExpenseState> emit) async {
     emit(TransactionLoadingState());
     try {
+      // await Future.delayed(const Duration(seconds: 1));
       final data = await callTransactionUseCase.callTransaction();
       emit(TransactionLoaded(transactionsEntity: data));
     } catch (e) {

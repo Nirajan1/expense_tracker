@@ -5,6 +5,12 @@ import 'package:expense_tracker/features/add_transaction/domain_layer/use_case/c
 import 'package:expense_tracker/features/add_transaction/domain_layer/use_case/delete_transaction_use_case.dart';
 import 'package:expense_tracker/features/add_transaction/domain_layer/use_case/update_transaction_use_case.dart';
 import 'package:expense_tracker/features/add_transaction/presentation/bloc/add_income_expense_bloc.dart';
+import 'package:expense_tracker/features/auth/data_layer/data_source/sign_up_local_data_source.dart';
+import 'package:expense_tracker/features/auth/data_layer/repository_impl/sign_up_repo_impl.dart';
+import 'package:expense_tracker/features/auth/domain_layer/repositories/sign_up_repositories.dart';
+import 'package:expense_tracker/features/auth/domain_layer/use_cases/get_user_use_case.dart';
+import 'package:expense_tracker/features/auth/domain_layer/use_cases/sign_up_use_case.dart';
+import 'package:expense_tracker/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:expense_tracker/features/bottom_navigation/bloc/navigation_bloc.dart';
 import 'package:expense_tracker/features/category/data_layer/data_source/category_data_source.dart';
 import 'package:expense_tracker/features/category/data_layer/repository/category_repository_impl.dart';
@@ -37,17 +43,18 @@ Future<void> init() async {
   final store = Store(getObjectBoxModel(), directory: '${dir.path}/objectbox');
   sl.registerSingleton<Store>(store);
   // for bloc
-  sl.registerFactory(
-    () => AddIncomeExpenseBloc(addTransactionUseCase: sl(), callTransactionUseCase: sl(), deleteTransactionUseCase: sl(), updateTransactionUseCase: sl()),
-  );
+  sl.registerFactory(() => AddIncomeExpenseBloc(addTransactionUseCase: sl(), callTransactionUseCase: sl(), deleteTransactionUseCase: sl(), updateTransactionUseCase: sl()));
   sl.registerFactory(() => NavigationBloc());
   sl.registerFactory(() => CategoryBloc(getAllCategoryUseCase: sl()));
   sl.registerFactory(() => LedgerBloc(addLedgerUseCase: sl(), updateLedgerUseCase: sl(), deleteLedgerUseCase: sl(), getAllLedgerUseCase: sl()));
+  sl.registerFactory(() => AuthBloc(signUpUseCase: sl(), getUserUseCase: sl()));
   // for use case
   sl.registerLazySingleton(() => AddTransactionUseCase(repositories: sl()));
   sl.registerLazySingleton(() => CallTransactionUseCase(repositories: sl()));
   sl.registerLazySingleton(() => DeleteTransactionUseCase(repositories: sl()));
   sl.registerLazySingleton(() => UpdateTransactionUseCase(transactionRepositories: sl()));
+  sl.registerLazySingleton(() => SignUpUseCase(signUpRepositories: sl()));
+  sl.registerLazySingleton(() => GetUserUseCase(signUpRepositories: sl()));
   //category use case
   sl.registerLazySingleton(() => AddCategoryUseCase(categoryRepositories: sl()));
   sl.registerLazySingleton(() => UpdateCategoryUseCase(categoryRepositories: sl()));
@@ -62,8 +69,10 @@ Future<void> init() async {
   sl.registerLazySingleton<TransactionRepositories>(() => TransactionRepositoryImpl(transactionLocalDataSource: sl()));
   sl.registerLazySingleton<CategoryRepositories>(() => CategoryRepositoryImpl(categoryDataSource: sl()));
   sl.registerLazySingleton<LedgerRepositories>(() => LedgerRepositoryImpl(ledgerLocalDataSource: sl()));
+  sl.registerLazySingleton<SignUpRepositories>(() => SignUpRepoImpl(signUpLocalDataSource: sl()));
   // for data source
   sl.registerLazySingleton<TransactionLocalDataSource>(() => TransactionLocalDataSourceImpl(sl()));
   sl.registerLazySingleton<CategoryDataSource>(() => CategoryDataSourceImpl(store: sl()));
   sl.registerLazySingleton<LedgerDataSource>(() => LedgerDataSourceImpl(store: sl()));
+  sl.registerLazySingleton<SignUpLocalDataSource>(() => SignUpLocalDataSourceImpl(store: sl()));
 }

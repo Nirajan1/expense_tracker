@@ -19,8 +19,8 @@ class HomePageView extends StatefulWidget {
 class _HomePageViewState extends State<HomePageView> {
   @override
   void initState() {
-    context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
-    context.read<CategoryBloc>().add(GetAllCategoryClickEvent());
+    // context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
+    // context.read<CategoryBloc>().add(GetAllCategoryClickEvent());
     super.initState();
   }
 

@@ -1,5 +1,7 @@
 import 'package:expense_tracker/core/app_theme.dart';
 import 'package:expense_tracker/features/add_transaction/presentation/bloc/add_income_expense_bloc.dart';
+import 'package:expense_tracker/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:expense_tracker/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:expense_tracker/features/bottom_navigation/bloc/navigation_bloc.dart';
 import 'package:expense_tracker/features/bottom_navigation/presentation/pages/bottom_navigation.dart';
 import 'package:expense_tracker/features/category/presentation/bloc/category_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:expense_tracker/core/di.dart' as di;
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,12 +23,17 @@ void main() async {
     ),
   );
   await di.init();
-  runApp(const MyApp());
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final bool isLoggedIn = prefs.getBool('loggedIn') ?? false;
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  // This widget is the root of your application.
+  final bool isLoggedIn;
+  const MyApp({
+    super.key,
+    required this.isLoggedIn,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +41,15 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => di.sl<NavigationBloc>()),
         BlocProvider(create: (context) => di.sl<AddIncomeExpenseBloc>()),
-        BlocProvider(create: (context) => di.sl<CategoryBloc>()),
+        BlocProvider(create: (context) => di.sl<CategoryBloc>()..add(GetAllCategoryClickEvent())),
         BlocProvider(create: (context) => di.sl<LedgerBloc>()),
+        BlocProvider(create: (context) => di.sl<AuthBloc>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Expense tracker',
         theme: AppTheme.lightTheme,
-        home: const BottomNavigationView(),
+        home: isLoggedIn ? BottomNavigationView() : const SignInPageView(),
       ),
     );
   }

@@ -31,13 +31,7 @@ class LedgerDetailPageView extends StatelessWidget {
                       child: DataTable(
                         horizontalMargin: 1,
                         // columnSpacing: 14,
-                        columns: [
-                          DataColumn(label: Text('Date')),
-                          DataColumn(label: Text('Particular')),
-                          DataColumn(label: Text('Dr')),
-                          DataColumn(label: Text('Cr')),
-                          DataColumn(label: Text('Amount')),
-                        ],
+                        columns: [DataColumn(label: Text('Date')), DataColumn(label: Text('Particular')), DataColumn(label: Text('Dr')), DataColumn(label: Text('Cr'))],
                         rows:
                             filteredTransactions.map((e) {
                               // bool isIncome = e.type == 'income';
@@ -48,7 +42,6 @@ class LedgerDetailPageView extends StatelessWidget {
                                   DataCell(Text(e.ledgerFrom == name ? "To ${e.ledgerTo}" : "Received from ${e.ledgerFrom}")),
                                   DataCell(e.ledgerFrom == name ? Text('0') : Text(e.amount)),
                                   DataCell(e.ledgerFrom == name ? Text(e.amount) : Text('0')),
-                                  DataCell(Text('0')),
                                 ],
                               );
                             }).toList(),

@@ -9,11 +9,13 @@
 import 'dart:typed_data';
 
 import 'package:flat_buffers/flat_buffers.dart' as fb;
-import 'package:objectbox/internal.dart' as obx_int; // generated code can access "internal" functionality
+import 'package:objectbox/internal.dart'
+    as obx_int; // generated code can access "internal" functionality
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'features/add_transaction/data_layer/model/transaction_model.dart';
+import 'features/auth/data_layer/model/sign_up_model.dart';
 import 'features/category/data_layer/model/category_model.dart';
 import 'features/ledger/data_layer/models/ledger_model.dart';
 
@@ -26,12 +28,36 @@ final _entities = <obx_int.ModelEntity>[
       lastPropertyId: const obx_int.IdUid(6, 5019323555561638200),
       flags: 0,
       properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(id: const obx_int.IdUid(1, 8152111216725888197), name: 'id', type: 6, flags: 1),
-        obx_int.ModelProperty(id: const obx_int.IdUid(2, 8484837863198934642), name: 'amount', type: 9, flags: 0),
-        obx_int.ModelProperty(id: const obx_int.IdUid(3, 948439506825432572), name: 'date', type: 9, flags: 0),
-        obx_int.ModelProperty(id: const obx_int.IdUid(4, 8198935935424583420), name: 'ledgerFrom', type: 9, flags: 0),
-        obx_int.ModelProperty(id: const obx_int.IdUid(5, 2583205664040630386), name: 'ledgerTo', type: 9, flags: 0),
-        obx_int.ModelProperty(id: const obx_int.IdUid(6, 5019323555561638200), name: 'type', type: 9, flags: 0)
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 8152111216725888197),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 8484837863198934642),
+            name: 'amount',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 948439506825432572),
+            name: 'date',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 8198935935424583420),
+            name: 'ledgerFrom',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 2583205664040630386),
+            name: 'ledgerTo',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 5019323555561638200),
+            name: 'type',
+            type: 9,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
@@ -41,24 +67,110 @@ final _entities = <obx_int.ModelEntity>[
       lastPropertyId: const obx_int.IdUid(4, 8923997284882049744),
       flags: 0,
       properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(id: const obx_int.IdUid(1, 2105827177741568055), name: 'id', type: 6, flags: 1),
-        obx_int.ModelProperty(id: const obx_int.IdUid(2, 3697390202441574555), name: 'name', type: 9, flags: 0),
-        obx_int.ModelProperty(id: const obx_int.IdUid(3, 6603503807476978370), name: 'slug', type: 9, flags: 2080, indexId: const obx_int.IdUid(3, 4714854442517657664)),
-        obx_int.ModelProperty(id: const obx_int.IdUid(4, 8923997284882049744), name: 'isDefault', type: 1, flags: 0)
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 2105827177741568055),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 3697390202441574555),
+            name: 'name',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 6603503807476978370),
+            name: 'slug',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(3, 4714854442517657664)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 8923997284882049744),
+            name: 'isDefault',
+            type: 1,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[
-        obx_int.ModelRelation(id: const obx_int.IdUid(1, 8130895950978445208), name: 'ledger', targetId: const obx_int.IdUid(5, 6798321023293377370))
+        obx_int.ModelRelation(
+            id: const obx_int.IdUid(1, 8130895950978445208),
+            name: 'ledger',
+            targetId: const obx_int.IdUid(5, 6798321023293377370))
       ],
       backlinks: <obx_int.ModelBacklink>[]),
-  obx_int.ModelEntity(id: const obx_int.IdUid(5, 6798321023293377370), name: 'LedgerModel', lastPropertyId: const obx_int.IdUid(6, 317696356377899297), flags: 0, properties: <obx_int.ModelProperty>[
-    obx_int.ModelProperty(id: const obx_int.IdUid(1, 2581745766984483622), name: 'id', type: 6, flags: 1),
-    obx_int.ModelProperty(id: const obx_int.IdUid(2, 9059871112021056845), name: 'name', type: 9, flags: 0),
-    obx_int.ModelProperty(id: const obx_int.IdUid(3, 5016222731181500917), name: 'categoryType', type: 9, flags: 0),
-    obx_int.ModelProperty(id: const obx_int.IdUid(4, 1463524144725750414), name: 'openingBalance', type: 6, flags: 0),
-    obx_int.ModelProperty(id: const obx_int.IdUid(5, 8556637126393128510), name: 'openingBalanceType', type: 9, flags: 0),
-    obx_int.ModelProperty(
-        id: const obx_int.IdUid(6, 317696356377899297), name: 'categoryId', type: 11, flags: 520, indexId: const obx_int.IdUid(4, 6351683410353338088), relationTarget: 'CategoryModel')
-  ], relations: <obx_int.ModelRelation>[], backlinks: <obx_int.ModelBacklink>[])
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(5, 6798321023293377370),
+      name: 'LedgerModel',
+      lastPropertyId: const obx_int.IdUid(6, 317696356377899297),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 2581745766984483622),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 9059871112021056845),
+            name: 'name',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 5016222731181500917),
+            name: 'categoryType',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 1463524144725750414),
+            name: 'openingBalance',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 8556637126393128510),
+            name: 'openingBalanceType',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 317696356377899297),
+            name: 'categoryId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(4, 6351683410353338088),
+            relationTarget: 'CategoryModel')
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(6, 2540625143878173699),
+      name: 'SignUpModel',
+      lastPropertyId: const obx_int.IdUid(5, 6115684448501276598),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 2432445008807469979),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 320527878761429556),
+            name: 'userName',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 9178290455322539562),
+            name: 'phoneNumber',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 4093383941185385929),
+            name: 'address',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 6115684448501276598),
+            name: 'passwordHash',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[])
 ];
 
 /// Shortcut for [obx.Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -73,7 +185,13 @@ final _entities = <obx_int.ModelEntity>[
 /// the ObjectBox Flutter library to fix loading the native ObjectBox library
 /// on Android 6 and older.
 Future<obx.Store> openStore(
-    {String? directory, int? maxDBSizeInKB, int? maxDataSizeInKB, int? fileMode, int? maxReaders, bool queriesCaseSensitiveDefault = true, String? macosApplicationGroup}) async {
+    {String? directory,
+    int? maxDBSizeInKB,
+    int? maxDataSizeInKB,
+    int? fileMode,
+    int? maxReaders,
+    bool queriesCaseSensitiveDefault = true,
+    String? macosApplicationGroup}) async {
   await loadObjectBoxLibraryAndroidCompat();
   return obx.Store(getObjectBoxModel(),
       directory: directory ?? (await defaultStoreDirectory()).path,
@@ -90,13 +208,21 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(5, 6798321023293377370),
+      lastEntityId: const obx_int.IdUid(6, 2540625143878173699),
       lastIndexId: const obx_int.IdUid(4, 6351683410353338088),
       lastRelationId: const obx_int.IdUid(1, 8130895950978445208),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [6114446958660389306, 4236097693042086683],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [3375736797520531700, 2965707209796176605, 2190376645185791078, 8672615465892326974, 3915780905291677177, 3774170466218628783, 6640190761632438989],
+      retiredPropertyUids: const [
+        3375736797520531700,
+        2965707209796176605,
+        2190376645185791078,
+        8672615465892326974,
+        3915780905291677177,
+        3774170466218628783,
+        6640190761632438989
+      ],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
@@ -130,20 +256,34 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-          final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final amountParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 6, '');
-          final dateParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 8, '');
-          final ledgerFromParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 10, '');
-          final ledgerToParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 12, '');
-          final typeParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 14, '');
-          final object = TransactionModel(id: idParam, amount: amountParam, date: dateParam, ledgerFrom: ledgerFromParam, ledgerTo: ledgerToParam, type: typeParam);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final amountParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final dateParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final ledgerFromParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final ledgerToParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 12, '');
+          final typeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 14, '');
+          final object = TransactionModel(
+              id: idParam,
+              amount: amountParam,
+              date: dateParam,
+              ledgerFrom: ledgerFromParam,
+              ledgerTo: ledgerToParam,
+              type: typeParam);
 
           return object;
         }),
     CategoryModel: obx_int.EntityDefinition<CategoryModel>(
         model: _entities[1],
         toOneRelations: (CategoryModel object) => [],
-        toManyRelations: (CategoryModel object) => {obx_int.RelInfo<CategoryModel>.toMany(1, object.id): object.ledger},
+        toManyRelations: (CategoryModel object) => {
+              obx_int.RelInfo<CategoryModel>.toMany(1, object.id): object.ledger
+            },
         getId: (CategoryModel object) => object.id,
         setId: (CategoryModel object, int id) {
           object.id = id;
@@ -162,12 +302,21 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-          final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final nameParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 6, '');
-          final slugParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 8, '');
-          final isDefaultParam = const fb.BoolReader().vTableGet(buffer, rootOffset, 10, false);
-          final object = CategoryModel(id: idParam, name: nameParam, slug: slugParam, isDefault: isDefaultParam);
-          obx_int.InternalToManyAccess.setRelInfo<CategoryModel>(object.ledger, store, obx_int.RelInfo<CategoryModel>.toMany(1, object.id));
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final slugParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final isDefaultParam =
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 10, false);
+          final object = CategoryModel(
+              id: idParam,
+              name: nameParam,
+              slug: slugParam,
+              isDefault: isDefaultParam);
+          obx_int.InternalToManyAccess.setRelInfo<CategoryModel>(object.ledger,
+              store, obx_int.RelInfo<CategoryModel>.toMany(1, object.id));
           return object;
         }),
     LedgerModel: obx_int.EntityDefinition<LedgerModel>(
@@ -181,7 +330,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectToFB: (LedgerModel object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
           final categoryTypeOffset = fbb.writeString(object.categoryType);
-          final openingBalanceTypeOffset = fbb.writeString(object.openingBalanceType);
+          final openingBalanceTypeOffset =
+              fbb.writeString(object.openingBalanceType);
           fbb.startTable(7);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
@@ -195,14 +345,73 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-          final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final nameParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 6, '');
-          final categoryTypeParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 8, '');
-          final openingBalanceParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
-          final openingBalanceTypeParam = const fb.StringReader(asciiOptimization: true).vTableGet(buffer, rootOffset, 12, '');
-          final object = LedgerModel(id: idParam, name: nameParam, categoryType: categoryTypeParam, openingBalance: openingBalanceParam, openingBalanceType: openingBalanceTypeParam);
-          object.category.targetId = const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final categoryTypeParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 8, '');
+          final openingBalanceParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+          final openingBalanceTypeParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 12, '');
+          final object = LedgerModel(
+              id: idParam,
+              name: nameParam,
+              categoryType: categoryTypeParam,
+              openingBalance: openingBalanceParam,
+              openingBalanceType: openingBalanceTypeParam);
+          object.category.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
           object.category.attach(store);
+          return object;
+        }),
+    SignUpModel: obx_int.EntityDefinition<SignUpModel>(
+        model: _entities[3],
+        toOneRelations: (SignUpModel object) => [],
+        toManyRelations: (SignUpModel object) => {},
+        getId: (SignUpModel object) => object.id,
+        setId: (SignUpModel object, int id) {
+          object.id = id;
+        },
+        objectToFB: (SignUpModel object, fb.Builder fbb) {
+          final userNameOffset = fbb.writeString(object.userName);
+          final phoneNumberOffset = fbb.writeString(object.phoneNumber);
+          final addressOffset = fbb.writeString(object.address);
+          final passwordHashOffset = fbb.writeString(object.passwordHash);
+          fbb.startTable(6);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, userNameOffset);
+          fbb.addOffset(2, phoneNumberOffset);
+          fbb.addOffset(3, addressOffset);
+          fbb.addOffset(4, passwordHashOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final userNameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final phoneNumberParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 8, '');
+          final addressParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final passwordHashParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 12, '');
+          final object = SignUpModel(
+              id: idParam,
+              userName: userNameParam,
+              phoneNumber: phoneNumberParam,
+              address: addressParam,
+              passwordHash: passwordHashParam);
+
           return object;
         })
   };
@@ -213,59 +422,99 @@ obx_int.ModelDefinition getObjectBoxModel() {
 /// [TransactionModel] entity fields to define ObjectBox queries.
 class TransactionModel_ {
   /// See [TransactionModel.id].
-  static final id = obx.QueryIntegerProperty<TransactionModel>(_entities[0].properties[0]);
+  static final id =
+      obx.QueryIntegerProperty<TransactionModel>(_entities[0].properties[0]);
 
   /// See [TransactionModel.amount].
-  static final amount = obx.QueryStringProperty<TransactionModel>(_entities[0].properties[1]);
+  static final amount =
+      obx.QueryStringProperty<TransactionModel>(_entities[0].properties[1]);
 
   /// See [TransactionModel.date].
-  static final date = obx.QueryStringProperty<TransactionModel>(_entities[0].properties[2]);
+  static final date =
+      obx.QueryStringProperty<TransactionModel>(_entities[0].properties[2]);
 
   /// See [TransactionModel.ledgerFrom].
-  static final ledgerFrom = obx.QueryStringProperty<TransactionModel>(_entities[0].properties[3]);
+  static final ledgerFrom =
+      obx.QueryStringProperty<TransactionModel>(_entities[0].properties[3]);
 
   /// See [TransactionModel.ledgerTo].
-  static final ledgerTo = obx.QueryStringProperty<TransactionModel>(_entities[0].properties[4]);
+  static final ledgerTo =
+      obx.QueryStringProperty<TransactionModel>(_entities[0].properties[4]);
 
   /// See [TransactionModel.type].
-  static final type = obx.QueryStringProperty<TransactionModel>(_entities[0].properties[5]);
+  static final type =
+      obx.QueryStringProperty<TransactionModel>(_entities[0].properties[5]);
 }
 
 /// [CategoryModel] entity fields to define ObjectBox queries.
 class CategoryModel_ {
   /// See [CategoryModel.id].
-  static final id = obx.QueryIntegerProperty<CategoryModel>(_entities[1].properties[0]);
+  static final id =
+      obx.QueryIntegerProperty<CategoryModel>(_entities[1].properties[0]);
 
   /// See [CategoryModel.name].
-  static final name = obx.QueryStringProperty<CategoryModel>(_entities[1].properties[1]);
+  static final name =
+      obx.QueryStringProperty<CategoryModel>(_entities[1].properties[1]);
 
   /// See [CategoryModel.slug].
-  static final slug = obx.QueryStringProperty<CategoryModel>(_entities[1].properties[2]);
+  static final slug =
+      obx.QueryStringProperty<CategoryModel>(_entities[1].properties[2]);
 
   /// See [CategoryModel.isDefault].
-  static final isDefault = obx.QueryBooleanProperty<CategoryModel>(_entities[1].properties[3]);
+  static final isDefault =
+      obx.QueryBooleanProperty<CategoryModel>(_entities[1].properties[3]);
 
   /// see [CategoryModel.ledger]
-  static final ledger = obx.QueryRelationToMany<CategoryModel, LedgerModel>(_entities[1].relations[0]);
+  static final ledger = obx.QueryRelationToMany<CategoryModel, LedgerModel>(
+      _entities[1].relations[0]);
 }
 
 /// [LedgerModel] entity fields to define ObjectBox queries.
 class LedgerModel_ {
   /// See [LedgerModel.id].
-  static final id = obx.QueryIntegerProperty<LedgerModel>(_entities[2].properties[0]);
+  static final id =
+      obx.QueryIntegerProperty<LedgerModel>(_entities[2].properties[0]);
 
   /// See [LedgerModel.name].
-  static final name = obx.QueryStringProperty<LedgerModel>(_entities[2].properties[1]);
+  static final name =
+      obx.QueryStringProperty<LedgerModel>(_entities[2].properties[1]);
 
   /// See [LedgerModel.categoryType].
-  static final categoryType = obx.QueryStringProperty<LedgerModel>(_entities[2].properties[2]);
+  static final categoryType =
+      obx.QueryStringProperty<LedgerModel>(_entities[2].properties[2]);
 
   /// See [LedgerModel.openingBalance].
-  static final openingBalance = obx.QueryIntegerProperty<LedgerModel>(_entities[2].properties[3]);
+  static final openingBalance =
+      obx.QueryIntegerProperty<LedgerModel>(_entities[2].properties[3]);
 
   /// See [LedgerModel.openingBalanceType].
-  static final openingBalanceType = obx.QueryStringProperty<LedgerModel>(_entities[2].properties[4]);
+  static final openingBalanceType =
+      obx.QueryStringProperty<LedgerModel>(_entities[2].properties[4]);
 
   /// See [LedgerModel.category].
-  static final category = obx.QueryRelationToOne<LedgerModel, CategoryModel>(_entities[2].properties[5]);
+  static final category = obx.QueryRelationToOne<LedgerModel, CategoryModel>(
+      _entities[2].properties[5]);
+}
+
+/// [SignUpModel] entity fields to define ObjectBox queries.
+class SignUpModel_ {
+  /// See [SignUpModel.id].
+  static final id =
+      obx.QueryIntegerProperty<SignUpModel>(_entities[3].properties[0]);
+
+  /// See [SignUpModel.userName].
+  static final userName =
+      obx.QueryStringProperty<SignUpModel>(_entities[3].properties[1]);
+
+  /// See [SignUpModel.phoneNumber].
+  static final phoneNumber =
+      obx.QueryStringProperty<SignUpModel>(_entities[3].properties[2]);
+
+  /// See [SignUpModel.address].
+  static final address =
+      obx.QueryStringProperty<SignUpModel>(_entities[3].properties[3]);
+
+  /// See [SignUpModel.passwordHash].
+  static final passwordHash =
+      obx.QueryStringProperty<SignUpModel>(_entities[3].properties[4]);
 }

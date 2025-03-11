@@ -19,6 +19,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   FutureOr<void> getAllCategoryClickEvent(GetAllCategoryClickEvent event, Emitter<CategoryState> emit) async {
     emit(CategoryLoadingState());
     try {
+      await Future.delayed(const Duration(seconds: 1));
       final categoryEntity = await getAllCategoryUseCase.getAllCategory();
       emit(CategoryLoadedState(categoryEntity: categoryEntity));
     } catch (e) {

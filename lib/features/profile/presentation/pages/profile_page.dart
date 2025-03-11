@@ -1,6 +1,8 @@
 import 'package:expense_tracker/core/app_colors.dart';
+import 'package:expense_tracker/features/auth/presentation/bloc/auth_bloc.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfilePageView extends StatelessWidget {
   const ProfilePageView({super.key});
@@ -8,10 +10,41 @@ class ProfilePageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 16,
+      // spacing: 16,
       children: [
         _topContainer(context),
-       ],
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Container(
+                height: 120,
+                width: 120,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/profile.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  String userName = 'Demo User';
+                  if (state is SignInLoadingSuccessState) {
+                    print(state.successMessage.userName);
+                    userName = state.successMessage.userName;
+                  } else {
+                    print('no loading state');
+                  }
+                  return Text(userName);
+                },
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }
