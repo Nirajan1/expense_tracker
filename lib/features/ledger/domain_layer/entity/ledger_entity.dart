@@ -24,4 +24,22 @@ class LedgerEntity extends Equatable {
         openingBalanceType,
         closingBalance,
       ];
+
+  LedgerEntity copyWith({
+    int? id,
+    String? name,
+    String? categoryType,
+    int? openingBalance,
+    String? openingBalanceType,
+    String? closingBalance,
+  }) {
+    return LedgerEntity(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      categoryType: categoryType ?? this.categoryType,
+      openingBalance: openingBalance ?? this.openingBalance,
+      openingBalanceType: openingBalanceType ?? this.openingBalanceType,
+      closingBalance: closingBalance ?? this.closingBalance,
+    );
+  }
 }

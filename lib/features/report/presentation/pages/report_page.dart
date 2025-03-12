@@ -2,7 +2,7 @@ import 'package:expense_tracker/core/app_card_layout.dart';
 import 'package:expense_tracker/core/app_colors.dart';
 import 'package:expense_tracker/features/ledger/domain_layer/entity/ledger_entity.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
-import 'package:expense_tracker/features/ledger/presentation_layer/pages/ledger_detail_page.dart';
+import 'package:expense_tracker/features/report/presentation/pages/detail_report_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -109,30 +109,46 @@ Widget _buildCard(BuildContext context, LedgerEntity ledgerEntity) {
     padding: const EdgeInsets.symmetric(horizontal: 18.0),
     child: InkWell(
       onTap: () {
+        final ledgerEntityValue = LedgerEntity(
+          id: ledgerEntity.id,
+          name: ledgerEntity.name,
+          categoryType: ledgerEntity.categoryType,
+          openingBalance: ledgerEntity.openingBalance,
+          openingBalanceType: ledgerEntity.openingBalanceType,
+          closingBalance: ledgerEntity.closingBalance,
+        );
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => LedgerDetailPageView(
-              name: ledgerEntity.name,
-              ledgerCategory: ledgerEntity.categoryType,
-              openingBalance: ledgerEntity.openingBalance,
-              openingBalanceType: ledgerEntity.openingBalanceType,
+            builder: (context) => DetailReportPageView(
+              ledgerEntity: ledgerEntityValue,
             ),
           ),
         );
       },
       child: AppCardLayoutView(
         child: ListTile(
-          title: Text(ledgerEntity.name),
-          subtitle: Row(
-            spacing: 4,
+          title: Row(
             children: [
-              Text(ledgerEntity.openingBalanceType.toString()),
-              Text(ledgerEntity.openingBalance.toString()),
-              SizedBox(width: 8),
+              Text(ledgerEntity.name),
+              Spacer(),
               Text(
                 "Type : ${ledgerEntity.categoryType.toString()}",
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 4,
+            children: [
+              Text(
+                'Opening BLC : ${ledgerEntity.openingBalance.toString()}',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+              Text(
+                'Closing BLC : ${ledgerEntity.closingBalance.toString()}',
+                style: Theme.of(context).textTheme.labelMedium,
               ),
             ],
           ),
