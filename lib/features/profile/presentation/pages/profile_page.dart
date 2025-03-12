@@ -19,12 +19,6 @@ class ProfilePageView extends StatefulWidget {
 
 class _ProfilePageViewState extends State<ProfilePageView> {
   @override
-  void initState() {
-    context.read<AuthBloc>().add(GetUserBynameClickEvent(userName: 'Nirajan Joshi'));
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       // spacing: 16,
@@ -108,12 +102,30 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                 buttonText: 'Logout',
                 color: Colors.red,
                 onTap: () async {
-                  SharedPreferences preferences = await SharedPreferences.getInstance();
-                  preferences.remove('loggedIn');
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Log out'),
+                      content: Text('Are you sure you want to Log out?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            SharedPreferences preferences = await SharedPreferences.getInstance();
+                            preferences.remove('loggedIn');
 
-                  if (!context.mounted) return;
+                            if (!context.mounted) return;
 
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignInPageView()), (route) => false);
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignInPageView()), (route) => false);
+                          },
+                          child: Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  );
                 },
               ),
             ],

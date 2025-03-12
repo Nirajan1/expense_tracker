@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:expense_tracker/core/app_card_layout.dart';
 import 'package:expense_tracker/core/app_colors.dart';
 import 'package:expense_tracker/features/add_transaction/presentation/bloc/add_income_expense_bloc.dart';
+import 'package:expense_tracker/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:expense_tracker/features/bottom_navigation/bloc/navigation_bloc.dart';
 import 'package:expense_tracker/features/category/presentation/bloc/category_bloc.dart';
 import 'package:expense_tracker/features/home/presentation/all_data.dart';
@@ -19,9 +20,21 @@ class HomePageView extends StatefulWidget {
 class _HomePageViewState extends State<HomePageView> {
   @override
   void initState() {
-    context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
-    context.read<CategoryBloc>().add(GetAllCategoryClickEvent());
     super.initState();
+    //Ensures that getData() is called after the first frame is built, avoiding unnecessary re-renders or context issues.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getData();
+    });
+  }
+
+  Future<void> getData() async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (mounted) {
+      context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
+      context.read<CategoryBloc>().add(GetAllCategoryClickEvent());
+      context.read<AuthBloc>().add(GetUserBynameClickEvent(userName: 'Nirajan Joshi'));
+    }
   }
 
   @override
@@ -101,53 +114,64 @@ Widget _buildBudgetCard(BuildContext context) {
       spacing: 10,
       children: [
         Expanded(
-          child: BlocBuilder<AddIncomeExpenseBloc, AddIncomeExpenseState>(
-            builder: (context, state) {
-              int total = 0;
-              if (state is TransactionLoadingState) {
-                return CircularProgressIndicator();
-              } else if (state is TransactionLoaded) {
-                if (state.transactionsEntity.isEmpty) {
-                  total = 0;
-                } else if (state.transactionsEntity.isNotEmpty) {
-                  total = state.transactionsEntity.where((element) => element.type == 'income').fold<int>(0, (sum, item) => sum + int.parse(item.amount));
-                  print(total);
-                }
-              }
-              return CustomCardWidget(
-                height: 146,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text('Income', style: Theme.of(context).textTheme.labelLarge), Text('Rs $total', overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall)],
+          child: CustomCardWidget(
+            height: 146,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Income', style: Theme.of(context).textTheme.labelLarge),
+                BlocBuilder<AddIncomeExpenseBloc, AddIncomeExpenseState>(
+                  builder: (context, state) {
+                    int total = 0;
+                    if (state is TransactionLoadingState) {
+                      total = 0;
+                    } else if (state is TransactionLoaded) {
+                      if (state.transactionsEntity.isEmpty) {
+                        total = 0;
+                      } else if (state.transactionsEntity.isNotEmpty) {
+                        total = state.transactionsEntity.where((element) => element.type == 'income').fold<int>(0, (sum, item) => sum + int.parse(item.amount));
+                      }
+                    }
+                    return Text(
+                      'Rs $total',
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    );
+                  },
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ),
         Expanded(
-          child: BlocBuilder<AddIncomeExpenseBloc, AddIncomeExpenseState>(
-            builder: (context, state) {
-              int total = 0;
-              if (state is TransactionLoadingState) {
-                return CircularProgressIndicator();
-              } else if (state is TransactionLoaded) {
-                if (state.transactionsEntity.isEmpty) {
-                  total = 0;
-                } else if (state.transactionsEntity.isNotEmpty) {
-                  total = state.transactionsEntity.where((element) => element.type == 'expense').fold<int>(0, (sum, item) => sum + int.parse(item.amount));
-                  print(total);
-                }
-              }
-              return CustomCardWidget(
-                height: 146,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text('Expense', style: Theme.of(context).textTheme.labelLarge), Text('Rs $total', overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall)],
-                ),
-              );
-            },
+            child: CustomCardWidget(
+          height: 146,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Expense', style: Theme.of(context).textTheme.labelLarge),
+              BlocBuilder<AddIncomeExpenseBloc, AddIncomeExpenseState>(
+                builder: (context, state) {
+                  int total = 0;
+                  if (state is TransactionLoadingState) {
+                    total = 0;
+                  } else if (state is TransactionLoaded) {
+                    if (state.transactionsEntity.isEmpty) {
+                      total = 0;
+                    } else if (state.transactionsEntity.isNotEmpty) {
+                      total = state.transactionsEntity.where((element) => element.type == 'expense').fold<int>(0, (sum, item) => sum + int.parse(item.amount));
+                    }
+                  }
+                  return Text(
+                    'Rs $total',
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  );
+                },
+              ),
+            ],
           ),
-        ),
+        )),
         Expanded(
           child: CustomCardWidget(
             height: 146,
