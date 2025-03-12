@@ -68,18 +68,33 @@ Widget _topContainer(BuildContext context) {
           children: [
             Padding(
               padding: EdgeInsets.only(left: padding),
-              child: Row(
-                children: [
-                  CircleAvatar(radius: 26, backgroundColor: AppColors.whiteColor, child: Text('N')),
-                  SizedBox(width: 10),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  String userName = 'Demo User';
+                  if (state is GetUserBynameClickLoadingState) {
+                    userName = 'Demo User';
+                  } else if (state is GetUserByNameLoadedState) {
+                    userName = state.signUpEntity?.userName ?? 'Demo User';
+                  }
+                  return Row(
                     children: [
-                      Text('Hi, dark mode', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.whiteColor)),
-                      Text('Good morning', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.whiteColor)),
+                      CircleAvatar(
+                        radius: 26,
+                        backgroundColor: AppColors.whiteColor,
+                        child: Text(userName[0].toUpperCase()),
+                      ),
+                      SizedBox(width: 10),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Hi, $userName', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.whiteColor)),
+                          Text('Good morning', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.whiteColor)),
+                        ],
+                      ),
                     ],
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             BlocListener<NavigationBloc, NavigationState>(

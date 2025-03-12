@@ -1,4 +1,5 @@
 import 'package:expense_tracker/core/app_card_layout.dart';
+import 'package:expense_tracker/core/app_colors.dart';
 import 'package:expense_tracker/core/app_top_container.dart';
 import 'package:expense_tracker/features/category/domain_layer/entity/category_entity.dart';
 import 'package:expense_tracker/features/category/presentation/bloc/category_bloc.dart';
@@ -46,6 +47,15 @@ class CategoryListPageView extends StatelessWidget {
           ],
         ),
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   shape: CircleBorder(),
+      //   backgroundColor: AppColors.primaryColor,
+      //   child: const Icon(
+      //     Icons.add_outlined,
+      //     color: AppColors.whiteColor,
+      //   ),
+      // ),
     );
   }
 }
