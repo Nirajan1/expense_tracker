@@ -6,12 +6,14 @@ class LedgerEntity extends Equatable {
   final String categoryType;
   final int openingBalance;
   final String openingBalanceType;
+  final String closingBalance;
   const LedgerEntity({
     this.id,
     required this.name,
     required this.categoryType,
     required this.openingBalance,
     required this.openingBalanceType,
+    required this.closingBalance,
   });
   @override
   List<Object?> get props => [
@@ -19,5 +21,7 @@ class LedgerEntity extends Equatable {
         name,
         categoryType,
         openingBalance,
+        openingBalanceType,
+        closingBalance,
       ];
 }

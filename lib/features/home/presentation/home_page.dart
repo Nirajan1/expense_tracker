@@ -9,6 +9,7 @@ import 'package:expense_tracker/features/category/presentation/bloc/category_blo
 import 'package:expense_tracker/features/home/presentation/all_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePageView extends StatefulWidget {
   const HomePageView({super.key});
@@ -28,12 +29,14 @@ class _HomePageViewState extends State<HomePageView> {
   }
 
   Future<void> getData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var userName = preferences.getString('userName');
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
       context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
       context.read<CategoryBloc>().add(GetAllCategoryClickEvent());
-      context.read<AuthBloc>().add(GetUserBynameClickEvent(userName: 'Nirajan Joshi'));
+      context.read<AuthBloc>().add(GetUserBynameClickEvent(userName: userName.toString()));
     }
   }
 

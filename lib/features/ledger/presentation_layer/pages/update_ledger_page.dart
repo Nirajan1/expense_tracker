@@ -13,13 +13,14 @@ class UpdateLedgerPageView extends StatefulWidget {
   final String openingBalanceValue;
   final int ledegerId;
   final String selectedCategoryType;
-
+ final String closingBalance;
   const UpdateLedgerPageView({
     required this.ledgerName,
     required this.openingBalanceAmount,
     required this.openingBalanceValue,
     required this.ledegerId,
     required this.selectedCategoryType,
+    required this.closingBalance,
     super.key,
   });
 
@@ -150,6 +151,7 @@ class _UpdateLedgerPageViewState extends State<UpdateLedgerPageView> {
                             categoryType: selectedCategory.name,
                             openingBalance: int.parse(_openingBalanceAmountController.text),
                             openingBalanceType: openingBalanceValue,
+                            closingBalance: widget.closingBalance,
                           );
 
                           // Add the ledger to the ledger bloc

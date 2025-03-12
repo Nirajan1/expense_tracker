@@ -5,6 +5,7 @@ import 'package:expense_tracker/features/bottom_navigation/bloc/navigation_bloc.
 import 'package:expense_tracker/features/bottom_navigation/presentation/pages/bottom_navigation.dart';
 import 'package:expense_tracker/features/category/presentation/bloc/category_bloc.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
+import 'package:expense_tracker/features/splash/presentaion/pages/splace_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,16 +22,12 @@ void main() async {
     ),
   );
   await di.init();
-  // final SharedPreferences prefs = await SharedPreferences.getInstance();
-  // final bool isLoggedIn = prefs.getBool('loggedIn') ?? false;
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // final bool isLoggedIn;
   const MyApp({
     super.key,
-    // required this.isLoggedIn,
   });
 
   @override
@@ -47,8 +44,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Expense tracker',
         theme: AppTheme.lightTheme,
-        home: BottomNavigationView(),
-        // home: isLoggedIn ? BottomNavigationView() : const SignInPageView(),
+        home: SplacePageView(),
       ),
     );
   }

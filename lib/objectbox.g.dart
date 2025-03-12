@@ -99,7 +99,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(5, 6798321023293377370),
       name: 'LedgerModel',
-      lastPropertyId: const obx_int.IdUid(6, 317696356377899297),
+      lastPropertyId: const obx_int.IdUid(7, 7573639716997943958),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -133,7 +133,12 @@ final _entities = <obx_int.ModelEntity>[
             type: 11,
             flags: 520,
             indexId: const obx_int.IdUid(4, 6351683410353338088),
-            relationTarget: 'CategoryModel')
+            relationTarget: 'CategoryModel'),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 7573639716997943958),
+            name: 'closingBalance',
+            type: 9,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
@@ -152,7 +157,8 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(2, 320527878761429556),
             name: 'userName',
             type: 9,
-            flags: 0),
+            flags: 2048,
+            indexId: const obx_int.IdUid(5, 6721517006911240471)),
         obx_int.ModelProperty(
             id: const obx_int.IdUid(3, 9178290455322539562),
             name: 'phoneNumber',
@@ -209,7 +215,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
       lastEntityId: const obx_int.IdUid(6, 2540625143878173699),
-      lastIndexId: const obx_int.IdUid(4, 6351683410353338088),
+      lastIndexId: const obx_int.IdUid(5, 6721517006911240471),
       lastRelationId: const obx_int.IdUid(1, 8130895950978445208),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [6114446958660389306, 4236097693042086683],
@@ -332,13 +338,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final categoryTypeOffset = fbb.writeString(object.categoryType);
           final openingBalanceTypeOffset =
               fbb.writeString(object.openingBalanceType);
-          fbb.startTable(7);
+          final closingBalanceOffset = fbb.writeString(object.closingBalance);
+          fbb.startTable(8);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, categoryTypeOffset);
           fbb.addInt64(3, object.openingBalance);
           fbb.addOffset(4, openingBalanceTypeOffset);
           fbb.addInt64(5, object.category.targetId);
+          fbb.addOffset(6, closingBalanceOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -357,12 +365,16 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final openingBalanceTypeParam =
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 12, '');
+          final closingBalanceParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 16, '');
           final object = LedgerModel(
               id: idParam,
               name: nameParam,
               categoryType: categoryTypeParam,
               openingBalance: openingBalanceParam,
-              openingBalanceType: openingBalanceTypeParam);
+              openingBalanceType: openingBalanceTypeParam,
+              closingBalance: closingBalanceParam);
           object.category.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
           object.category.attach(store);
@@ -494,6 +506,10 @@ class LedgerModel_ {
   /// See [LedgerModel.category].
   static final category = obx.QueryRelationToOne<LedgerModel, CategoryModel>(
       _entities[2].properties[5]);
+
+  /// See [LedgerModel.closingBalance].
+  static final closingBalance =
+      obx.QueryStringProperty<LedgerModel>(_entities[2].properties[6]);
 }
 
 /// [SignUpModel] entity fields to define ObjectBox queries.

@@ -17,6 +17,7 @@ class LedgerDataSourceImpl implements LedgerDataSource {
   @override
   Future<void> addLedger({required LedgerModel ledgerModel}) async {
     ledgerBox.put(ledgerModel);
+    print(ledgerModel.id);
   }
 
   @override

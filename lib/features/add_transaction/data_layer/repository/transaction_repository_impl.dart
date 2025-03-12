@@ -22,20 +22,17 @@ class TransactionRepositoryImpl implements TransactionRepositories {
   @override
   Future<List<TransactionEntity>> getAllTransactions() async {
     final transactionModel = await transactionLocalDataSource.callTransaction();
-    print('Transaction is ${transactionModel.map((model) => model.toEntity()).toList()}');
     return transactionModel.map((model) => model.toEntity()).toList();
   }
 
   @override
   Future<void> deleteTransactions({required int id}) async {
-    print('deleting id $id');
     return await transactionLocalDataSource.deleteTransaction(id: id);
   }
 
   @override
   Future<void> updateTransaction({required TransactionEntity transactionEntity}) async {
     final transactionModel = TransactionModel.fromEntity(transactionEntity);
-    print('data_layer repository impl :${transactionModel.id}');
     return await transactionLocalDataSource.updateTransaction(transactionModel: transactionModel);
   }
 }

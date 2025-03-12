@@ -5,6 +5,7 @@ class AddLedgerUseCase {
   final LedgerRepositories ledgerRepositories;
   const AddLedgerUseCase({required this.ledgerRepositories});
   Future<void> addLedger({required LedgerEntity ledgerEntity}) async {
+    print('use case $ledgerEntity');
     return await ledgerRepositories.addLedger(ledgerEntity: ledgerEntity);
   }
 }

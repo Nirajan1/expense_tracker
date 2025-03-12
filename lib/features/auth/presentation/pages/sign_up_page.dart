@@ -92,12 +92,14 @@ class _SignUpPageViewState extends State<SignUpPageView> {
                   const SizedBox(height: 10),
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
-                      bool isPasswordVisible = false;
-                      if (state is PasswordVisibleState) {
-                        isPasswordVisible = state.isPasswordVisible;
-                      } else if (state is PasswordHiddenState) {
-                        isPasswordVisible = state.isPasswordVisible;
-                      }
+                      // bool isPasswordVisible = false;
+                      // if (state is PasswordVisibleState) {
+                      //   isPasswordVisible = state.isPasswordVisible;
+                      // } else if (state is PasswordHiddenState) {
+                      //   isPasswordVisible = state.isPasswordVisible;
+                      // }
+                      bool isPasswordVisible = state is PasswordVisibleState ? state.isPasswordVisible : false;
+
                       return TextFormField(
                         controller: passwordHashController,
                         obscureText: !isPasswordVisible,

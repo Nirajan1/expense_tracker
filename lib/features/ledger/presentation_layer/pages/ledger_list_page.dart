@@ -88,116 +88,121 @@ Widget _buildCard(BuildContext context, LedgerEntity ledgerEntity) {
       onTap: () {},
       child: AppCardLayoutView(
         child: ListTile(
-            title: Text(ledgerEntity.name),
-            subtitle: Row(
-              spacing: 4,
-              children: [
-                Text(ledgerEntity.openingBalanceType.toString()),
-                Text(ledgerEntity.openingBalance.toString()),
-                SizedBox(width: 8),
-                Text(
-                  ledgerEntity.categoryType.toString(),
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  // splashRadius: 0.0001,
-                  padding: EdgeInsets.zero,
-                  // constraints: const BoxConstraints(minWidth: 0, maxWidth: 0),
-                  onPressed: () async {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => UpdateLedgerPageView(
-                          ledegerId: ledgerEntity.id!.toInt(),
-                          ledgerName: ledgerEntity.name,
-                          openingBalanceAmount: ledgerEntity.openingBalance.toString(),
-                          openingBalanceValue: ledgerEntity.openingBalanceType,
-                          selectedCategoryType: ledgerEntity.categoryType,
-                        ),
+          title: Row(
+            children: [
+              Text(ledgerEntity.name),
+              Spacer(),
+              IconButton(
+                // splashRadius: 0.0001,
+                padding: EdgeInsets.zero,
+                onPressed: () async {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => UpdateLedgerPageView(
+                        ledegerId: ledgerEntity.id!.toInt(),
+                        ledgerName: ledgerEntity.name,
+                        openingBalanceAmount: ledgerEntity.openingBalance.toString(),
+                        openingBalanceValue: ledgerEntity.openingBalanceType,
+                        selectedCategoryType: ledgerEntity.categoryType,
+                        closingBalance: ledgerEntity.closingBalance,
                       ),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.edit_outlined,
-                    color: Colors.blueAccent,
-                  ),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.edit_outlined,
+                  color: Colors.blueAccent,
                 ),
-                IconButton(
-                  // splashRadius: 0.0001,
-                  padding: EdgeInsets.zero,
-                  // constraints: const BoxConstraints(minWidth: 0, maxWidth: 0),
-                  onPressed: () async {
-                    // Fetch transactions associated with the ledger
+              ),
+              IconButton(
+                // splashRadius: 0.0001,
+                padding: EdgeInsets.zero,
+                onPressed: () async {
+                  // Fetch transactions associated with the ledger
+                  context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
+                  // Wait for the state to update
+                  await Future.delayed(Duration(milliseconds: 500));
+                  // Check if the ledger has transactions
+                  if (context.mounted) {
+                    final state = context.read<AddIncomeExpenseBloc>().state;
+                    if (state is TransactionLoaded) {
+                      final transactions = state.transactionsEntity.where((transaction) => transaction.ledgerFrom == ledgerEntity.name || transaction.ledgerTo == ledgerEntity.name).toList();
 
-                    context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
-                    // Wait for the state to update
-                    await Future.delayed(Duration(milliseconds: 500));
-                    // Check if the ledger has transactions
-                    if (context.mounted) {
-                      final state = context.read<AddIncomeExpenseBloc>().state;
-                      if (state is TransactionLoaded) {
-                        final transactions = state.transactionsEntity.where((transaction) => transaction.ledgerFrom == ledgerEntity.name || transaction.ledgerTo == ledgerEntity.name).toList();
-
-                        if (transactions.isNotEmpty) {
-                          // Show a message that the ledger cannot be deleted
-                          if (context.mounted) {
-                            AppSnackBar.showCustomSnackBar(context, 'Cannot delete ledger "${ledgerEntity.name}" because it has associated transactions.', true, isTop: true);
-                          }
-                        } else {
-                          // Proceed with deletion
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text('Delete Ledger'),
-                              content: Text('Are you sure you want to delete this ledger?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Delete'),
-                                ),
-                              ],
-                            ),
-                          );
+                      if (transactions.isNotEmpty) {
+                        // Show a message that the ledger cannot be deleted
+                        if (context.mounted) {
+                          AppSnackBar.showCustomSnackBar(context, 'Cannot delete ledger "${ledgerEntity.name}" because it has associated transactions.', true, isTop: true);
                         }
+                      } else {
+                        // Proceed with deletion
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            backgroundColor: AppColors.whiteColor,
+                            title: Text('Delete Ledger'),
+                            content: Text('Are you sure you want to delete this ledger?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        );
                       }
                     }
-                  },
-                  icon: Icon(
-                    Icons.delete_outline,
-                    color: Colors.redAccent,
-                  ),
+                  }
+                },
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: Colors.redAccent,
                 ),
-              ],
-            )
+              ),
+            ],
+          ),
+          subtitle: Row(
+            spacing: 4,
+            children: [
+              Text('Opening BLC : '),
+              Text(ledgerEntity.openingBalance.toString()),
+              SizedBox(width: 8),
+              Text('Closing BLC : '),
+              Text(
+                ledgerEntity.closingBalance.toString(),
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          // trailing: Row(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [
+          //    ],
+          // )
 
-            //  BlocBuilder<LedgerBloc, LedgerState>(
-            //   builder: (context, state) {
-            //     if (state is ) {
-            //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted successfully')));
-            //     }
-            //     return InkWell(
-            //       onTap: () {
-            //         // context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
-            //       },
-            //       child: Icon(
-            //         Icons.delete_outline,
-            //         color: Colors.redAccent,
-            //       ),
-            //     );
-            //   },
-            // ),
-            ),
+          //  BlocBuilder<LedgerBloc, LedgerState>(
+          //   builder: (context, state) {
+          //     if (state is ) {
+          //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted successfully')));
+          //     }
+          //     return InkWell(
+          //       onTap: () {
+          //         // context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
+          //       },
+          //       child: Icon(
+          //         Icons.delete_outline,
+          //         color: Colors.redAccent,
+          //       ),
+          //     );
+          //   },
+          // ),
+        ),
       ),
     ),
   );

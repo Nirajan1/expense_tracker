@@ -9,7 +9,13 @@ class LedgerRepositoryImpl implements LedgerRepositories {
 
   @override
   Future<void> addLedger({required LedgerEntity ledgerEntity}) async {
-    final ledgerModel = LedgerModel.fromEntity(ledgerEntity);
+    final ledgerModel = LedgerModel(
+      name: ledgerEntity.name,
+      categoryType: ledgerEntity.categoryType,
+      openingBalance: ledgerEntity.openingBalance,
+      openingBalanceType: ledgerEntity.openingBalanceType,
+      closingBalance: ledgerEntity.closingBalance,
+    );
     await ledgerLocalDataSource.addLedger(ledgerModel: ledgerModel);
   }
 

@@ -81,7 +81,7 @@
     },
     {
       "id": "5:6798321023293377370",
-      "lastPropertyId": "6:317696356377899297",
+      "lastPropertyId": "7:7573639716997943958",
       "name": "LedgerModel",
       "properties": [
         {
@@ -117,6 +117,11 @@
           "flags": 520,
           "indexId": "4:6351683410353338088",
           "relationTarget": "CategoryModel"
+        },
+        {
+          "id": "7:7573639716997943958",
+          "name": "closingBalance",
+          "type": 9
         }
       ],
       "relations": []
@@ -135,7 +140,9 @@
         {
           "id": "2:320527878761429556",
           "name": "userName",
-          "type": 9
+          "type": 9,
+          "flags": 2048,
+          "indexId": "5:6721517006911240471"
         },
         {
           "id": "3:9178290455322539562",
@@ -157,7 +164,7 @@
     }
   ],
   "lastEntityId": "6:2540625143878173699",
-  "lastIndexId": "4:6351683410353338088",
+  "lastIndexId": "5:6721517006911240471",
   "lastRelationId": "1:8130895950978445208",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

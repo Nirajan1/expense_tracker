@@ -20,12 +20,6 @@ class _SignInPageViewState extends State<SignInPageView> {
   final GlobalKey<FormState> loginKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    // context.read<AuthBloc>().add(GetUserBynameClickEvent(userName: 'Nirajan Joshi'));
-    super.initState();
-  }
-
-  @override
   void dispose() {
     loginUserNameController.dispose();
     loginPasswordController.dispose();
@@ -75,13 +69,24 @@ class _SignInPageViewState extends State<SignInPageView> {
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: loginPasswordController,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    hintText: '*****',
-                  ),
-                  validator: (value) => value == null || value.isEmpty ? 'Password is required' : null,
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    bool isPasswordVisible = state is PasswordVisibleState ? state.isPasswordVisible : false;
+
+                    return TextFormField(
+                      controller: loginPasswordController,
+                      keyboardType: TextInputType.name,
+                      obscureText: !isPasswordVisible,
+                      decoration: InputDecoration(
+                        hintText: '',
+                        suffixIcon: IconButton(
+                          icon: Icon(isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                          onPressed: () => context.read<AuthBloc>().add(TogglePasswordVisibilityEvent()),
+                        ),
+                      ),
+                      validator: (value) => value == null || value.isEmpty ? 'Password is required' : null,
+                    );
+                  },
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -112,7 +117,7 @@ class _SignInPageViewState extends State<SignInPageView> {
                           // Hide loading overlay
                           hideLoadingOverlay(context);
                           // Show success SnackBar
-                          AppSnackBar.showCustomSnackBar(context, 'User Logged In!', false, isTop: true);
+                          AppSnackBar.showCustomSnackBar(context, 'Welcome Back ${state.successMessage.userName}', false, isTop: true);
                           // navigate to main page
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(

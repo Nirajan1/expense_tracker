@@ -75,9 +75,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else if (user.passwordHash != event.password) {
         emit(SignInClickErrorState(errorMessage: 'Incorrect password! Please try again.'));
       } else {
-        // print('herer');
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('loggedIn', true);
+        prefs.setString('userName', user.userName);
         emit(SignInLoadingSuccessState(successMessage: user));
       }
     } catch (e) {
@@ -87,8 +87,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> profileUpdateClickEvent(ProfileUpDateClickEvent event, Emitter<AuthState> emit) async {
     emit(ProfileUpDateClickLoadingState());
-    print(event.userName);
-    print(event.signUpEntity);
     try {
       await Future.delayed(const Duration(seconds: 1));
       await profileUpdateUseCase.updateProfile(profile: event.signUpEntity);
@@ -96,7 +94,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       add(GetUserBynameClickEvent(userName: event.userName));
     } catch (exception) {
       Future.delayed(const Duration(seconds: 1));
-      print('error excpetion');
       emit(ProfileUpDateClickErrorState(message: exception.toString()));
     }
   }

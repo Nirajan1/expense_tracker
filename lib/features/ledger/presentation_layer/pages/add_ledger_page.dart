@@ -127,6 +127,7 @@ class _AddLedgerPageViewState extends State<AddLedgerPageView> {
                             categoryType: selectedCategory.name,
                             openingBalance: int.parse(_openingBalanceAmountController.text),
                             openingBalanceType: openingBalanceValue,
+                            closingBalance: '0',
                           );
 
                           // Add the ledger to the ledger bloc
