@@ -129,7 +129,7 @@ Widget _buildAllDataCard(
         width: 50,
         height: 50,
         decoration: BoxDecoration(
-          color: title == 'Expense' ? Colors.amber : Colors.green,
+          color: title == 'Expense' ? Colors.redAccent : Colors.green,
           shape: BoxShape.circle,
         ),
       ),
@@ -140,7 +140,7 @@ Widget _buildAllDataCard(
         children: [
           Icon(
             title == 'Expense' ? Icons.arrow_downward : Icons.arrow_upward,
-            color: title == 'Expense' ? Colors.red : Colors.green,
+            color: title == 'Expense' ? Colors.redAccent : Colors.green,
             size: 16,
           ),
           Text(
@@ -148,7 +148,7 @@ Widget _buildAllDataCard(
             style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 18,
-              color: title == 'Expense' ? Colors.red : Colors.green,
+              color: title == 'Expense' ? Colors.redAccent : Colors.green,
             ),
           ),
           // const SizedBox(width: 4),

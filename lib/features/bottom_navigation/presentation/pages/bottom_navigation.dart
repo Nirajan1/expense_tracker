@@ -1,4 +1,5 @@
 import 'package:expense_tracker/core/app_colors.dart';
+import 'package:expense_tracker/core/app_snack_bar.dart';
 import 'package:expense_tracker/features/add_transaction/presentation/pages/add_transaction_page.dart';
 import 'package:expense_tracker/features/bottom_navigation/bloc/navigation_bloc.dart';
 import 'package:expense_tracker/features/home/presentation/home_page.dart';
@@ -8,8 +9,19 @@ import 'package:expense_tracker/features/transaction/presentation/pages/transact
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BottomNavigationView extends StatelessWidget {
+class BottomNavigationView extends StatefulWidget {
   const BottomNavigationView({super.key});
+
+  @override
+  State<BottomNavigationView> createState() => _BottomNavigationViewState();
+}
+
+class _BottomNavigationViewState extends State<BottomNavigationView> {
+  DateTime? _lastBackButtonPressTime;
+
+  void showSnacBar() {
+    AppSnackBar.showCustomSnackBar(context, 'Press back again to exit', false, isTop: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +59,26 @@ class BottomNavigationView extends StatelessWidget {
               ),
             ],
           ),
-          body: _buildBody(context, currentIndex),
+          body: PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, result) {
+              if (didPop) return;
+              final now = DateTime.now();
+              final lastPress = _lastBackButtonPressTime;
+              // Check if the user pressed back within 2 seconds
+              if (lastPress == null || now.difference(lastPress) > Duration(seconds: 2)) {
+                // Update the last back button press time
+                _lastBackButtonPressTime = now;
+
+                // Show a SnackBar
+                showSnacBar();
+              } else {
+                // Exit the app if the user pressed back again within 2 seconds
+                Navigator.of(context).pop();
+              }
+            },
+            child: _buildBody(context, currentIndex),
+          ),
         );
       },
     );

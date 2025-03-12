@@ -7,8 +7,10 @@ import 'package:expense_tracker/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:expense_tracker/features/bottom_navigation/bloc/navigation_bloc.dart';
 import 'package:expense_tracker/features/category/presentation/bloc/category_bloc.dart';
 import 'package:expense_tracker/features/home/presentation/all_data.dart';
+import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:objectbox/objectbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePageView extends StatefulWidget {
@@ -31,12 +33,13 @@ class _HomePageViewState extends State<HomePageView> {
   Future<void> getData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var userName = preferences.getString('userName');
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(microseconds: 777777));
 
     if (mounted) {
       context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
       context.read<CategoryBloc>().add(GetAllCategoryClickEvent());
       context.read<AuthBloc>().add(GetUserBynameClickEvent(userName: userName.toString()));
+      context.read<LedgerBloc>().add(GetAllLedgersClickEvent());
     }
   }
 
@@ -47,7 +50,7 @@ class _HomePageViewState extends State<HomePageView> {
         _topContainer(context),
         SizedBox(height: MediaQuery.of(context).size.height * 0.036),
         _buildBudgetCard(context),
-        SizedBox(height: Platform.isAndroid ? MediaQuery.of(context).size.height * 0.06 : MediaQuery.of(context).size.height * 0.036),
+        SizedBox(height: Platform.isAndroid ? MediaQuery.of(context).size.height * 0.05 : MediaQuery.of(context).size.height * 0.036),
         Expanded(child: _bottomContainer(context)),
       ],
     );
@@ -133,75 +136,159 @@ Widget _buildBudgetCard(BuildContext context) {
       children: [
         Expanded(
           child: CustomCardWidget(
-            height: 146,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Income', style: Theme.of(context).textTheme.labelLarge),
-                BlocBuilder<AddIncomeExpenseBloc, AddIncomeExpenseState>(
-                  builder: (context, state) {
-                    int total = 0;
-                    if (state is TransactionLoadingState) {
-                      total = 0;
-                    } else if (state is TransactionLoaded) {
-                      if (state.transactionsEntity.isEmpty) {
-                        total = 0;
-                      } else if (state.transactionsEntity.isNotEmpty) {
-                        total = state.transactionsEntity.where((element) => element.type == 'income').fold<int>(0, (sum, item) => sum + int.parse(item.amount));
+            height: 176,
+            child: BlocBuilder<LedgerBloc, LedgerState>(
+              builder: (context, state) {
+                double cashClosing = 0;
+                double bankClosing = 0;
+                if (state is LedgerLoadingState) {
+                  // Show 0 or a loading indicator while data is being fetched
+                  cashClosing = 0.0;
+                } else if (state is LedgerLoadedState) {
+                  if (state.ledgerList.isNotEmpty) {
+                    for (var data in state.ledgerList) {
+                      if (data.categoryType == 'Cash') {
+                        try {
+                          // Parse the closingBalance and add it to the total
+                          cashClosing += double.parse(data.closingBalance);
+                        } catch (e) {
+                          // Handle parsing errors (e.g., if closingBalance is not a valid number)
+                          debugPrint('Error parsing closingBalance: ${data.closingBalance}');
+                        }
+                      } else {
+                        cashClosing = 0.0;
                       }
                     }
-                    return Text(
-                      'Rs $total',
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    );
-                  },
-                ),
-              ],
+                    for (var data in state.ledgerList) {
+                      if (data.categoryType == 'Bank') {
+                        try {
+                          // Parse the closingBalance and add it to the total
+                          bankClosing += double.parse(data.closingBalance);
+                        } catch (e) {
+                          // Handle parsing errors (e.g., if closingBalance is not a valid number)
+                          debugPrint('Error parsing closingBalance: ${data.closingBalance}');
+                        }
+                      } else {
+                        bankClosing = 0.0;
+                      }
+                    }
+                  }
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 20,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.money),
+                          const SizedBox(width: 3),
+                          Text('Cash : '),
+                          Text(
+                            'Rs ${cashClosing.toInt()}',
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.account_balance),
+                          const SizedBox(width: 3),
+                          Text('Cash : '),
+                          Text(
+                            'Rs ${bankClosing.toInt()}',
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ),
         Expanded(
-            child: CustomCardWidget(
-          height: 146,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 18,
             children: [
-              Text('Expense', style: Theme.of(context).textTheme.labelLarge),
-              BlocBuilder<AddIncomeExpenseBloc, AddIncomeExpenseState>(
-                builder: (context, state) {
-                  int total = 0;
-                  if (state is TransactionLoadingState) {
-                    total = 0;
-                  } else if (state is TransactionLoaded) {
-                    if (state.transactionsEntity.isEmpty) {
-                      total = 0;
-                    } else if (state.transactionsEntity.isNotEmpty) {
-                      total = state.transactionsEntity.where((element) => element.type == 'expense').fold<int>(0, (sum, item) => sum + int.parse(item.amount));
-                    }
-                  }
-                  return Text(
-                    'Rs $total',
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  );
-                },
+              CustomCardWidget(
+                height: 80,
+                color: Colors.green,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Income',
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            color: AppColors.whiteColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                    ),
+                    BlocBuilder<AddIncomeExpenseBloc, AddIncomeExpenseState>(
+                      builder: (context, state) {
+                        int total = 0;
+                        if (state is TransactionLoadingState) {
+                          total = 0;
+                        } else if (state is TransactionLoaded) {
+                          if (state.transactionsEntity.isEmpty) {
+                            total = 0;
+                          } else if (state.transactionsEntity.isNotEmpty) {
+                            total = state.transactionsEntity.where((element) => element.type == 'income').fold<int>(0, (sum, item) => sum + int.parse(item.amount));
+                          }
+                        }
+                        return Text(
+                          'Rs $total',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleSmall!.copyWith(color: AppColors.whiteColor),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              CustomCardWidget(
+                height: 80,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.redAccent,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Expense',
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: AppColors.whiteColor,
+                              fontWeight: FontWeight.w500,
+                            )),
+                    BlocBuilder<AddIncomeExpenseBloc, AddIncomeExpenseState>(
+                      builder: (context, state) {
+                        int total = 0;
+                        if (state is TransactionLoadingState) {
+                          total = 0;
+                        } else if (state is TransactionLoaded) {
+                          if (state.transactionsEntity.isEmpty) {
+                            total = 0;
+                          } else if (state.transactionsEntity.isNotEmpty) {
+                            total = state.transactionsEntity.where((element) => element.type == 'expense').fold<int>(0, (sum, item) => sum + int.parse(item.amount));
+                          }
+                        }
+                        return Text(
+                          'Rs $total',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleSmall!.copyWith(color: AppColors.whiteColor),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-        )),
-        Expanded(
-          child: CustomCardWidget(
-            height: 146,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Total balance', overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge),
-                Text('Rs 10,000', overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall),
-              ],
-            ),
-          ),
-        ),
+        )
       ],
     ),
   );
@@ -281,13 +368,13 @@ Widget _buildCard({required String title, required String price, required String
   return AppCardLayoutView(
     child: ListTile(
       shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      leading: Container(width: 50, height: 50, decoration: BoxDecoration(color: title == 'Expense' ? Colors.amber : Colors.green, shape: BoxShape.circle)),
+      leading: Container(width: 50, height: 50, decoration: BoxDecoration(color: title == 'Expense' ? Colors.redAccent : Colors.green, shape: BoxShape.circle)),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         spacing: 4,
         children: [
-          Icon(title == 'Expense' ? Icons.arrow_downward : Icons.arrow_upward, color: title == 'Expense' ? Colors.red : Colors.green, size: 16),
-          Text('Rs $price', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18, color: title == 'Expense' ? Colors.red : Colors.green)),
+          Icon(title == 'Expense' ? Icons.arrow_downward : Icons.arrow_upward, color: title == 'Expense' ? Colors.redAccent : Colors.green, size: 16),
+          Text('Rs $price', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18, color: title == 'Expense' ? Colors.redAccent : Colors.green)),
         ],
       ),
       title: Text(title),
@@ -299,11 +386,13 @@ Widget _buildCard({required String title, required String price, required String
 class CustomCardWidget extends StatelessWidget {
   final Widget child;
   final double height;
-  // final double width;
+  final double? width;
+  final Color? color;
   const CustomCardWidget({
     required this.height,
-    // required this.width,
+    this.width,
     required this.child,
+    this.color = AppColors.whiteColor,
     super.key,
   });
 
@@ -311,10 +400,20 @@ class CustomCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: height,
+      width: width,
       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       decoration: BoxDecoration(
-        color: AppColors.whiteColor,
+        color: color,
         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10), topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+        // gradient: LinearGradient(
+        //   begin: Alignment.topLeft,
+        //   end: Alignment.bottomRight,
+        //   colors: [
+        //     Colors.green,
+        //     Colors.redAccent,
+        //     Colors.amber,
+        //   ],
+        // ),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withValues(alpha: 0.5),

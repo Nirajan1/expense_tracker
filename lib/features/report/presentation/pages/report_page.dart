@@ -14,11 +14,11 @@ class ReportPageView extends StatefulWidget {
 }
 
 class _ReportPageViewState extends State<ReportPageView> {
-  @override
-  void initState() {
-    context.read<LedgerBloc>().add(GetAllLedgersClickEvent());
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   context.read<LedgerBloc>().add(GetAllLedgersClickEvent());
+  // }
 
   @override
   Widget build(BuildContext context) {

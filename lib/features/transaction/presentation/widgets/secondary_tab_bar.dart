@@ -245,7 +245,7 @@ Widget _buildDatList(BuildContext context, String title, Color? color) {
             ),
           );
         }
-        print(filteredTransactions);
+        // print(filteredTransactions);
         return ListView.builder(
           itemCount: filteredTransactions.length,
           padding: EdgeInsets.zero,

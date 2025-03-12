@@ -10,11 +10,6 @@ class TransactionPageView extends StatefulWidget {
 }
 
 class _TransactionPageViewState extends State<TransactionPageView> {
-  @override
-  void initState() {
-    // context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
