@@ -33,9 +33,12 @@ class PasswordHiddenState extends AuthState {
   const PasswordHiddenState({required this.isPasswordVisible});
 }
 
-class GetUserByNameState extends AuthState {
+// get user by name state
+class GetUserBynameClickLoadingState extends AuthState {}
+
+class GetUserByNameLoadedState extends AuthState {
   final SignUpEntity? signUpEntity;
-  const GetUserByNameState({required this.signUpEntity});
+  const GetUserByNameLoadedState({required this.signUpEntity});
   @override
   List<Object> get props => [signUpEntity!];
 }
@@ -56,4 +59,23 @@ class SignInClickErrorState extends AuthState {
 class SignInLoadingSuccessState extends AuthState {
   final SignUpEntity successMessage;
   const SignInLoadingSuccessState({required this.successMessage});
+}
+
+// profile update states
+class ProfileUpDateClickLoadingState extends AuthState {}
+
+class ProfileUpDateClickErrorState extends AuthState {
+  final String message;
+  const ProfileUpDateClickErrorState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class ProfileUpDateClickLoadedState extends AuthState {
+  final String signUpEntity;
+  const ProfileUpDateClickLoadedState({
+    required this.signUpEntity,
+  });
+  @override
+  List<Object> get props => [signUpEntity];
 }

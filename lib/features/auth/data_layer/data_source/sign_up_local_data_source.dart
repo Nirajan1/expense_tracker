@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 abstract class SignUpLocalDataSource {
   Future<void> signUp({required SignUpModel signUpModel});
   Future<SignUpModel?> getUserByUserName(String userName);
+  Future<void> updateuserProfile({required SignUpModel profileModel});
 }
 
 class SignUpLocalDataSourceImpl implements SignUpLocalDataSource {
@@ -54,10 +55,16 @@ class SignUpLocalDataSourceImpl implements SignUpLocalDataSource {
       } else {
         debugPrint('User found: ${user.userName}');
       }
+      print(user);
       return user;
     } catch (e) {
       debugPrint('Error retrieving user by username: $e');
       return null;
     }
+  }
+
+  @override
+  Future<void> updateuserProfile({required SignUpModel profileModel}) async {
+    signUpModelBox.put(profileModel);
   }
 }

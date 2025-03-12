@@ -9,6 +9,7 @@ import 'package:expense_tracker/features/auth/data_layer/data_source/sign_up_loc
 import 'package:expense_tracker/features/auth/data_layer/repository_impl/sign_up_repo_impl.dart';
 import 'package:expense_tracker/features/auth/domain_layer/repositories/sign_up_repositories.dart';
 import 'package:expense_tracker/features/auth/domain_layer/use_cases/get_user_use_case.dart';
+import 'package:expense_tracker/features/auth/domain_layer/use_cases/profile_update_use_case.dart';
 import 'package:expense_tracker/features/auth/domain_layer/use_cases/sign_up_use_case.dart';
 import 'package:expense_tracker/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:expense_tracker/features/bottom_navigation/bloc/navigation_bloc.dart';
@@ -47,7 +48,7 @@ Future<void> init() async {
   sl.registerFactory(() => NavigationBloc());
   sl.registerFactory(() => CategoryBloc(getAllCategoryUseCase: sl()));
   sl.registerFactory(() => LedgerBloc(addLedgerUseCase: sl(), updateLedgerUseCase: sl(), deleteLedgerUseCase: sl(), getAllLedgerUseCase: sl()));
-  sl.registerFactory(() => AuthBloc(signUpUseCase: sl(), getUserUseCase: sl()));
+  sl.registerFactory(() => AuthBloc(signUpUseCase: sl(), getUserUseCase: sl(), profileUpdateUseCase: sl()));
   // for use case
   sl.registerLazySingleton(() => AddTransactionUseCase(repositories: sl()));
   sl.registerLazySingleton(() => CallTransactionUseCase(repositories: sl()));
@@ -55,6 +56,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateTransactionUseCase(transactionRepositories: sl()));
   sl.registerLazySingleton(() => SignUpUseCase(signUpRepositories: sl()));
   sl.registerLazySingleton(() => GetUserUseCase(signUpRepositories: sl()));
+  sl.registerLazySingleton(() => ProfileUpdateUseCase(signUpRepositories: sl()));
   //category use case
   sl.registerLazySingleton(() => AddCategoryUseCase(categoryRepositories: sl()));
   sl.registerLazySingleton(() => UpdateCategoryUseCase(categoryRepositories: sl()));

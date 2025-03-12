@@ -4,13 +4,25 @@ import 'package:expense_tracker/features/auth/presentation/pages/sign_in_page.da
 import 'package:expense_tracker/features/category/presentation/pages/category_list_page.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/pages/ledger_list_page.dart';
+import 'package:expense_tracker/features/profile/presentation/pages/edit_profile.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfilePageView extends StatelessWidget {
+class ProfilePageView extends StatefulWidget {
   const ProfilePageView({super.key});
+
+  @override
+  State<ProfilePageView> createState() => _ProfilePageViewState();
+}
+
+class _ProfilePageViewState extends State<ProfilePageView> {
+  @override
+  void initState() {
+    context.read<AuthBloc>().add(GetUserBynameClickEvent(userName: 'Nirajan Joshi'));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +33,7 @@ class ProfilePageView extends StatelessWidget {
         SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 16),
+              const SizedBox(height: 26),
               Container(
                 height: 120,
                 width: 120,
@@ -37,21 +49,44 @@ class ProfilePageView extends StatelessWidget {
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   String userName = 'Demo User';
-                  if (state is SignInLoadingSuccessState) {
-                    print(state.successMessage.userName);
-                    userName = state.successMessage.userName;
-                  } else {
-                    print('no loading state');
+                  String phoneNumber = '9812345678';
+                  if (state is GetUserBynameClickLoadingState) {
+                    userName = 'Demo User';
+                    phoneNumber = '9812345678';
+                  } else if (state is GetUserByNameLoadedState) {
+                    userName = state.signUpEntity?.userName ?? 'Demo User';
+                    phoneNumber = state.signUpEntity?.phoneNumber ?? '9812345678';
                   }
-                  return Text(userName);
+                  return Column(
+                    children: [
+                      Text(userName),
+                      const SizedBox(height: 6),
+                      Text(phoneNumber),
+                    ],
+                  );
                 },
               ),
-              Text('9842529245'),
               SizedBox(height: MediaQuery.of(context).size.height * 0.09),
               ButtonWidgets(
                 buttonIcon: Icons.person_outline,
                 buttonText: 'Edit Profile',
-                onTap: () {},
+                onTap: () {
+                  final state = context.read<AuthBloc>().state;
+                  if (state is GetUserByNameLoadedState) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfilePageView(
+                          id: state.signUpEntity!.id!.toInt(),
+                          userName: state.signUpEntity!.userName,
+                          address: state.signUpEntity!.address,
+                          phoneNumber: state.signUpEntity!.phoneNumber,
+                          password: state.signUpEntity!.passwordHash,
+                        ),
+                      ),
+                    );
+                  }
+                },
               ),
               ButtonWidgets(
                 buttonIcon: Icons.category,

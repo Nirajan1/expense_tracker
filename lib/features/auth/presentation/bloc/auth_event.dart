@@ -36,3 +36,15 @@ class SignInClickEvent extends AuthEvent {
   @override
   List<Object> get props => [userName, password];
 }
+
+// profie page update
+class ProfileUpDateClickEvent extends AuthEvent {
+  final SignUpEntity signUpEntity;
+  final String userName;
+  const ProfileUpDateClickEvent({
+    required this.signUpEntity,
+    required this.userName,
+  });
+  @override
+  List<Object> get props => [signUpEntity, userName];
+}

@@ -25,4 +25,10 @@ class SignUpRepoImpl implements SignUpRepositories {
     print(signUpModel.passwordHash.toString());
     return signUpModel.toEntity();
   }
+
+  @override
+  Future<void> updateProfile({required SignUpEntity profile}) async {
+    final profileModel = SignUpModel.fromEntity(profile);
+    return await signUpLocalDataSource.updateuserProfile(profileModel: profileModel);
+  }
 }
