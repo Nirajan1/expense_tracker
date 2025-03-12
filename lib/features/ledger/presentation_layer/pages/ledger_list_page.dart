@@ -6,6 +6,7 @@ import 'package:expense_tracker/features/add_transaction/presentation/bloc/add_i
 import 'package:expense_tracker/features/ledger/domain_layer/entity/ledger_entity.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/bloc/ledger_bloc.dart';
 import 'package:expense_tracker/features/ledger/presentation_layer/pages/add_ledger_page.dart';
+import 'package:expense_tracker/features/ledger/presentation_layer/pages/update_ledger_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -100,53 +101,84 @@ Widget _buildCard(BuildContext context, LedgerEntity ledgerEntity) {
                 ),
               ],
             ),
-            trailing: IconButton(
-              onPressed: () async {
-                // Fetch transactions associated with the ledger
-                context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
-                // Wait for the state to update
-                await Future.delayed(Duration(milliseconds: 500));
-                // Check if the ledger has transactions
-                if (context.mounted) {
-                  final state = context.read<AddIncomeExpenseBloc>().state;
-                  if (state is TransactionLoaded) {
-                    final transactions = state.transactionsEntity.where((transaction) => transaction.ledgerFrom == ledgerEntity.name || transaction.ledgerTo == ledgerEntity.name).toList();
-
-                    if (transactions.isNotEmpty) {
-                      // Show a message that the ledger cannot be deleted
-                      if (context.mounted) {
-                        AppSnackBar.showCustomSnackBar(context, 'Cannot delete ledger "${ledgerEntity.name}" because it has associated transactions.', true, isTop: true);
-                      }
-                    } else {
-                      // Proceed with deletion
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Delete Ledger'),
-                          content: Text('Are you sure you want to delete this ledger?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
-                                Navigator.pop(context);
-                              },
-                              child: Text('Delete'),
-                            ),
-                          ],
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  // splashRadius: 0.0001,
+                  padding: EdgeInsets.zero,
+                  // constraints: const BoxConstraints(minWidth: 0, maxWidth: 0),
+                  onPressed: () async {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => UpdateLedgerPageView(
+                          ledegerId: ledgerEntity.id!.toInt(),
+                          ledgerName: ledgerEntity.name,
+                          openingBalanceAmount: ledgerEntity.openingBalance.toString(),
+                          openingBalanceValue: ledgerEntity.openingBalanceType,
+                          selectedCategoryType: ledgerEntity.categoryType,
                         ),
-                      );
+                      ),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                IconButton(
+                  // splashRadius: 0.0001,
+                  padding: EdgeInsets.zero,
+                  // constraints: const BoxConstraints(minWidth: 0, maxWidth: 0),
+                  onPressed: () async {
+                    // Fetch transactions associated with the ledger
+
+                    context.read<AddIncomeExpenseBloc>().add(IncomeExpenseLoadEvent());
+                    // Wait for the state to update
+                    await Future.delayed(Duration(milliseconds: 500));
+                    // Check if the ledger has transactions
+                    if (context.mounted) {
+                      final state = context.read<AddIncomeExpenseBloc>().state;
+                      if (state is TransactionLoaded) {
+                        final transactions = state.transactionsEntity.where((transaction) => transaction.ledgerFrom == ledgerEntity.name || transaction.ledgerTo == ledgerEntity.name).toList();
+
+                        if (transactions.isNotEmpty) {
+                          // Show a message that the ledger cannot be deleted
+                          if (context.mounted) {
+                            AppSnackBar.showCustomSnackBar(context, 'Cannot delete ledger "${ledgerEntity.name}" because it has associated transactions.', true, isTop: true);
+                          }
+                        } else {
+                          // Proceed with deletion
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Delete Ledger'),
+                              content: Text('Are you sure you want to delete this ledger?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<LedgerBloc>().add(LedgerDeleteClickEvent(ledgerId: ledgerEntity.id!.toInt()));
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Delete'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
                     }
-                  }
-                }
-              },
-              icon: Icon(
-                Icons.delete_outline,
-                color: Colors.redAccent,
-              ),
+                  },
+                  icon: Icon(
+                    Icons.delete_outline,
+                    color: Colors.redAccent,
+                  ),
+                ),
+              ],
             )
 
             //  BlocBuilder<LedgerBloc, LedgerState>(

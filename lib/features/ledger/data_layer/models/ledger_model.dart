@@ -22,6 +22,7 @@ class LedgerModel {
 
   factory LedgerModel.fromEntity(LedgerEntity ledgerEntity) {
     return LedgerModel(
+      id: ledgerEntity.id!.toInt(),
       name: ledgerEntity.name,
       categoryType: ledgerEntity.categoryType,
       openingBalance: ledgerEntity.openingBalance,

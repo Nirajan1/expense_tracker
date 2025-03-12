@@ -67,6 +67,7 @@ class LedgerBloc extends Bloc<LedgerEvent, LedgerState> {
     emit(LedgerLoadingState());
     try {
       await updateLedgerUseCase.updateLedger(ledgerEntity: event.ledgerEntity);
+      print(event.ledgerEntity.id);
       emit(LedgerLoadedSuccessState());
       add(GetAllLedgersClickEvent());
     } catch (e) {
